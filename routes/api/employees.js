@@ -7,6 +7,7 @@ const {
   deleteEmployee,
   getEmployeeById
 } = require('../../controllers/employeesController.js')
+
 router.route('/')
   .get(getAllemployees)
   .post(createNewEmployee)
