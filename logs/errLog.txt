@@ -1,0 +1,3 @@
+20220626	14:05:26	c682be37-9043-47f4-af57-c1a1dc0b41c1	Error: Not allowed by CORS
+20220626	14:38:16	4fd6c53d-3243-47d5-b5a5-955ce79b0c26	TypeError: req.json is not a function
+20220626	15:30:12	aa1955d2-b66f-4e36-89bf-c1713a1fee2d	TypeError: Cannot read properties of undefined (reading 'filter')
