@@ -1,3 +1,6 @@
 20220626	14:05:26	c682be37-9043-47f4-af57-c1a1dc0b41c1	Error: Not allowed by CORS
 20220626	14:38:16	4fd6c53d-3243-47d5-b5a5-955ce79b0c26	TypeError: req.json is not a function
 20220626	15:30:12	aa1955d2-b66f-4e36-89bf-c1713a1fee2d	TypeError: Cannot read properties of undefined (reading 'filter')
+20220627	12:07:20	7d0a0c22-40df-425f-a215-2036ff65446e	ReferenceError: reg is not defined
+20220627	12:07:49	15e875f9-a666-4460-89a4-89bc0ded98bb	ReferenceError: re is not defined
+20220627	12:08:21	42cebc14-b336-4aff-a22b-a5d0c10082e3	ReferenceError: sendStatus is not defined
