@@ -93,3 +93,5 @@
 20220627	12:11:37	f319c4e3-b67e-41c0-860c-f99d7faa4cc4	DELETE	undefined	/employees
 20220627	12:14:56	321162a7-054e-405d-9c66-babcf09e8888	POST	undefined	/auth
 20220627	12:15:11	ff88daa6-ea55-40d9-8aa2-9d17e59320ad	POST	undefined	/auth
+20220627	13:07:01	5a0200c9-ac2e-4472-a3c8-b0589a46f7c0	POST	undefined	/register
+20220627	13:08:29	fbfb0d10-bc0f-4540-b411-a6904af5f638	POST	undefined	/register

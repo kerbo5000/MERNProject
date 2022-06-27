@@ -8,7 +8,11 @@ const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
 const verifyJWT = require('./middleware/verifyJWT')
 const credentials = require('./middleware/credentials')
+const moogoose = require('mongoose')
+const connectDB = require('./config/dbConn')
 const cookieParser = require('cookie-parser')
+connectDB()
+
 const app = express()
 app.use(logger)
 app.use(credentials)
@@ -30,5 +34,7 @@ app.all('*',(req,res) => {
 })
 
 app.use(errorHandler)
-
-app.listen(PORT,() => console.log(`Server runnig on port ${PORT}`))
+moogoose.connection.once('open',() => {
+  console.log('Connected to MongoDB')
+  app.listen(PORT,() => console.log(`Server running on port ${PORT}`))
+})
