@@ -13,10 +13,11 @@ const verifyRoles = require('../../middleware/verifyRoles')
 router.route('/')
   .get(getAllemployees)
   .post(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),createNewEmployee)
-  .put(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),updateEmployee)
-  .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
+
 
 router.route('/:id')
   .get(getEmployeeById)
+  .put(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),updateEmployee)
+  .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
 
 module.exports = router
