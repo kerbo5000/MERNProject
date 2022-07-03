@@ -35,7 +35,7 @@ router.route('/:newsId/comments',verifyId('news'))
 
 router.route('/:newsId/comments/:commentIndex',verifyId('news'))
   .get(getCommentByIndex)
-  .get(deleteComment)
+  .delete(deleteComment)
 
 router.route('/:newsId',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),verifyId('news'))
   .put(updateNews)

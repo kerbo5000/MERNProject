@@ -14,15 +14,14 @@ const verifyId = require('../../middleware/verifyId')
 
 router.route('/')
   .get(getEmployees)
+  .post(verifyRoles(ROLES_LIST.Admin),createNewEmployee)
 
 router.route('/',verifyRoles(ROLES_LIST.Admin))
-  .post(createNewEmployee)
+
 
 router.route('/:id',verifyId('employee'))
   .get(getEmployeeById)
-
-router.route('/:id',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
-  .delete(deleteEmployee)
+  .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
 
 router.route('/:id/password',verifyId('employee'))
   .put(updateEmployeePwd)
