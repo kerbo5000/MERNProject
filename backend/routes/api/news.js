@@ -15,6 +15,7 @@ const {
 } = require('../../controllers/newsController.js')
 const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
+const verifyId = require('../../middleware/verifyId')
 
 router.route('/')
   .get(getNews)
@@ -22,21 +23,21 @@ router.route('/')
 router.route('/',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor))
   .post(createNews)
 
-router.route('/:newsId')
+router.route('/:newsId',verifyId('news'))
   .get(getNewsById)
 
-router.route('/:newsId/likes')
+router.route('/:newsId/likes',verifyId('news'))
   .put(likeNews)
 
-router.route('/:newsId/comments')
+router.route('/:newsId/comments',verifyId('news'))
   .get(getComments)
   .post(addComment)
 
-router.route('/:newsId/comments/:commentIndex')
+router.route('/:newsId/comments/:commentIndex',verifyId('news'))
   .get(getCommentByIndex)
   .get(deleteComment)
 
-router.route('/:newsId',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor))
+router.route('/:newsId',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),verifyId('news'))
   .put(updateNews)
   .delete(deleteNews)
 

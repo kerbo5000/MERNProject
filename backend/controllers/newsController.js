@@ -35,51 +35,57 @@ const createNews = async (req,res) => {
 }
 
 const getNewsById = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  let news = await News.findById(req.params.id)
-  if(!news){
-    res.status(204).json({'message':`No news with ID: ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // let news = await News.findById(req.params.id)
+  // if(!news){
+  //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  // }
+  const news = req.target
   res.status(200).json(news)
 }
 
 const likeNews = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  let news = await News.findById(req.params.id)
-  if(!news){
-    res.status(204).json({'message':`No news with ID: ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // let news = await News.findById(req.params.id)
+  // if(!news){
+  //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  // }
+  const news = req.target
   news.likes = news.likes + 1
   const result = await news.save()
   res.status(200).json(result)
 }
 
 const getComments = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  let news = await News.findById(req.params.id)
-  if(!news){
-    res.status(204).json({'message':`No news with ID: ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // let news = await News.findById(req.params.id)
+  // if(!news){
+  //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  // }
+  const news = req.target
   res.status(200).json(news.comments)
 }
 
 const addComment = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  //
+  // let news = await News.findById(req.params.id)
+  // if(!news){
+  //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  // }
+
   if(!req?.body?.body ){
     res.status(400).json({'message':'Comment body is required.'})
   }
-  let news = await News.findById(req.params.id)
-  if(!news){
-    res.status(204).json({'message':`No news with ID: ${req.params.id}`})
-  }
+  const news = req.target
   const body = req.body.body
   news.comments = [...news.comments,{body,from:req.user}]
   const result = await news.save()
@@ -87,34 +93,48 @@ const addComment = async (req,res) => {
 }
 
 const getCommentByIndex = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  //
+  // let news = await News.findById(req.params.id)
+  // if(!news){
+  //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  // }
   if(!req?.params?.commentIndex){
     res.status(400).json({'message':'Comment index parameter is required'})
   }
-  let news = await News.findById(req.params.id)
-  if(!news){
-    res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+  const news = req.target
+  if(newx.comments.length<req.params.commentIndex ){
+    res.status(400).json({'message':'Index out ouf bounds'})
   }
   res.status(200).json(news.comments[req.params.commentIndex])
 }
 
 const deleteComment = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
   if(req.roles.includes(ROLES_LIST.Admin) || req.roles.includes(ROLES_LIST.Editor) ){
     const result = await News.deleteOne({_id:req.params.id})
     res.status(200).json(result)
   }else{
-    let news = await News.findById(req.params.id)
-    if(!news){
-      res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+    // let news = await News.findById(req.params.id)
+    // if(!news){
+    //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
+    // }
+    if(!req?.params?.commentIndex){
+      res.status(400).json({'message':'Comment index parameter is required'})
     }
-    const comment = news.comment[req.params.commentIndex]
+    const news = req.target
+    if(newx.comments.length<req.params.commentIndex ){
+      res.status(400).json({'message':'Index out ouf bounds'})
+    }
+    const comment = news.comments[req.params.commentIndex]
     if(comment.username == req.user){
-      const result = await News.deleteOne({_id:req.params.id})
+      // const result = await News.deleteOne({_id:req.params.id})
+      news.comments.splice(req.params.commentIndex,1)
+      const result = await news.save()
       res.status(200).json(result)
     }else{
       retrun res.sendStatus(405)

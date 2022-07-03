@@ -10,6 +10,7 @@ const {
 } = require('../../controllers/employeesController.js')
 const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
+const verifyId = require('../../middleware/verifyId')
 
 router.route('/')
   .get(getEmployees)
@@ -17,16 +18,16 @@ router.route('/')
 router.route('/',verifyRoles(ROLES_LIST.Admin))
   .post(createNewEmployee)
 
-router.route('/:id')
+router.route('/:id',verifyId('employee'))
   .get(getEmployeeById)
 
-router.route('/:id',verifyRoles(ROLES_LIST.Admin))
+router.route('/:id',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
   .delete(deleteEmployee)
 
-router.route('/id/password')
+router.route('/:id/password',verifyId('employee'))
   .put(updateEmployeePwd)
 
-router.route('/id/roles',verifyRoles(ROLES_LIST.Admin)))
+router.route('/:id/roles',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
   .put(updateEmployeeRole)
 
 
