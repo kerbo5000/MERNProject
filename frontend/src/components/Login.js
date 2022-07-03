@@ -1,9 +1,9 @@
 import {useRef,useState,useEffect} from 'react'
 import axios from '../api/axios'
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
-import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import Card from 'react-bootstrap/Card'
+import Alert from 'react-bootstrap/Alert'
 import useAuth from '../hooks/useAuth'
 import {Link, useNavigate,useLocation} from 'react-router-dom'
 
@@ -41,7 +41,7 @@ function Login() {
 
       const accessToken = response?.data?.accessToken
       const roles = response?.data?.roles
-      setAuth({user,pwd,roles,accessToken})
+      setAuth({user,roles,accessToken})
       setUser('')
       setPwd('')
       navigate(from,{replace:true})

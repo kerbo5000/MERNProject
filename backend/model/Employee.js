@@ -8,6 +8,23 @@ const employeeSchema = new Schema({
   lastname:{
     type:String,
     required:true
-  }
+  },
+  username:{
+    type:String,
+    required:true
+  },
+  password:{
+    type:String,
+    required:true
+  },
+  roles:{
+    User:Number,
+    Editor:{
+      type:Number,
+      default:1984
+    },
+    Admin:Number
+  },
+  refreshToken:String
 })
 module.exports = mongoose.model('Employee',employeeSchema)

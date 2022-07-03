@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom"
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
 const Unauthorized = () => {
-    const navigate = useNavigate();
-
-    const goBack = () => navigate(-1);
-
+    const navigate = useNavigate()
+    const goBack = () => navigate(-1)
     return (
         <Card>
         <Card.Header as="h1">Blog</Card.Header>

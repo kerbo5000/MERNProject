@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import Card from 'react-bootstrap/Card';
+import Card from 'react-bootstrap/Card'
 
 const Editor = () => {
     return (

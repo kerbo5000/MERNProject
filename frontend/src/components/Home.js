@@ -1,17 +1,17 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useContext } from "react";
-import AuthContext from "../context/authProvider";
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
+import { useNavigate, Link } from "react-router-dom"
+import { useContext } from "react"
+import AuthContext from "../context/authProvider"
+import Card from 'react-bootstrap/Card'
+import Button from 'react-bootstrap/Button'
 const Home = () => {
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth } = useContext(AuthContext)
     const navigate = useNavigate();
 
     const logout = async () => {
         // if used in more components, this should be in context
         // axios to /logout endpoint
-        setAuth({});
-        navigate('/linkpage');
+        setAuth({})
+        navigate('/linkpage')
     }
 
     return (

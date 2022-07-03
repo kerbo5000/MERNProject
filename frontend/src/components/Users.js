@@ -1,8 +1,8 @@
 import {useState,useEffect} from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import {useNavigate,useLocation} from 'react-router-dom'
-import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table';
+import Card from 'react-bootstrap/Card'
+import Table from 'react-bootstrap/Table'
 const Users = () => {
   const [users,setUsers] = useState()
   const axiosPrivate = useAxiosPrivate()
