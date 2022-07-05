@@ -1,5 +1,5 @@
 const News = require('../model/News')
-
+const User = require('../model/User')
 const getNews = async (req,res) => {
   let news = await News.find()
   if(req?.query?.title){
@@ -56,6 +56,9 @@ const likeNews = async (req,res) => {
   // }
   const news = req.target
   news.likes = news.likes + 1
+  const user = await User.findOne({username:req.user})
+  user.news.push(news._id)
+  user.save()
   const result = await news.save()
   res.status(200).json(result)
 }
@@ -87,7 +90,7 @@ const addComment = async (req,res) => {
   }
   const news = req.target
   const body = req.body.body
-  news.comments = [...news.comments,{body,from:req.user}]
+  news.comments.push({body,from:req.user})
   const result = await news.save()
   res.status(200).json(result)
 }

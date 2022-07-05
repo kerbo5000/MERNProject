@@ -22,18 +22,19 @@ const getEmployees = async (req,res) => {
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(employees)
   }else{
-    employees = employees.map((employee) => {employee.firstname,employee.lastname,employee.username,employee.id})
+    employees = employees.map((employee) => {employee.firstname,employee.lastname,employee.username,employee.id,employee.roles})
     res.status(200).json(employee)
   }
 }
 const getEmployeeById = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  let employee = await Employee.findById(req.params.id)
-  if(!employee){
-    res.status(204).json({'message':`No employee with ID: ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // let employee = await Employee.findById(req.params.id)
+  // if(!employee){
+  //   res.status(204).json({'message':`No employee with ID: ${req.params.id}`})
+  // }
+  const employee = req.target
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(employee)
   }else{
@@ -66,13 +67,14 @@ const createNewEmployee = async (req,res) => {
 }
 
 const updateEmployeePwd = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  const employee = await Employee.findOne({_id:req.params.id}).exec()
-  if(!employee){
-    return res.status(204).json({'message':`No employee with ID ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // const employee = await Employee.findOne({_id:req.params.id}).exec()
+  // if(!employee){
+  //   return res.status(204).json({'message':`No employee with ID ${req.params.id}`})
+  // }
+  const employee = req.target
   if(req.roles.includes(ROLES_LIST.Admin)){
     if(!req?.body?.newPassword){
       res.status(400).json({'message':'New password required'})
@@ -97,26 +99,27 @@ const updateEmployeePwd = async (req,res) => {
 }
 
 const updateEmployeeRole = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  let employee = await Employee.findById(req.params.id)
-  if(!employee){
-    res.status(204).json({'message':`No employee with ID: ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // let employee = await Employee.findById(req.params.id)
+  // if(!employee){
+  //   res.status(204).json({'message':`No employee with ID: ${req.params.id}`})
+  // }
+  const employee = req.target
   employee.role = {...employee.role,Admin=5150}
   const result = await employee.save()
   res.status(200).json(result)
 }
 
 const deleteEmployee = async (req,res) => {
-  if(!req?.params?.id){
-    res.status(400).json({'message':'ID parameter is required'})
-  }
-  const employee = await Employee.findOne({_id:req.params.id}).exec()
-  if(!employee){
-    return res.status(204).json({'message':`No employee matches ID ${req.params.id}`})
-  }
+  // if(!req?.params?.id){
+  //   res.status(400).json({'message':'ID parameter is required'})
+  // }
+  // const employee = await Employee.findOne({_id:req.params.id}).exec()
+  // if(!employee){
+  //   return res.status(204).json({'message':`No employee matches ID ${req.params.id}`})
+  // }
   const result = await Employee.deleteOne({_id:req.params.id})
   res.status(200).json(result)
 }

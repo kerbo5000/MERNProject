@@ -16,17 +16,14 @@ router.route('/')
   .get(getEmployees)
   .post(verifyRoles(ROLES_LIST.Admin),createNewEmployee)
 
-router.route('/',verifyRoles(ROLES_LIST.Admin))
-
-
-router.route('/:id',verifyId('employee'))
+router.route('/:employeeId',verifyId('employee'))
   .get(getEmployeeById)
   .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
 
-router.route('/:id/password',verifyId('employee'))
+router.route('/:employeeId/password',verifyId('employee'))
   .put(updateEmployeePwd)
 
-router.route('/:id/roles',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
+router.route('/:employeeId/roles',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
   .put(updateEmployeeRole)
 
 

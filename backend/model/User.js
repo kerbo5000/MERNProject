@@ -17,6 +17,9 @@ const userSchema = new Schema({
     type:String,
     required:true
   },
-  refreshToken:String
+  refreshToken:String,
+  news:[{
+    type: mongoose.Schema.Types.ObjectId
+  }]
 })
 module.exports = mongoose.model('User',userSchema)
