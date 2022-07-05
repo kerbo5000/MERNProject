@@ -4,11 +4,12 @@ const {
   getUsers,
   getUser,
   updateUserPwd,
-  deleteUser
+  deleteUser,
   getUserLikes
 } = require('../../controllers/usersController.js')
 const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
+const verifyId = require('../../middleware/verifyId')
 
 router.route('/')
   .get(getUsers)

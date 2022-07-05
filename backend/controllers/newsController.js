@@ -135,7 +135,7 @@ const deleteComment = async (req,res) => {
   }
 }
 
-const updateNews = (req,res) => {
+const updateNews = async (req,res) => {
   const news = req.target
   if(!req?.body?.title || !req?.body?.body ){
     res.status(400).json({'message':'title or body is required.'})
@@ -154,7 +154,7 @@ const updateNews = (req,res) => {
   }
 }
 
-const deleteNews = (req,res) => {
+const deleteNews = async (req,res) => {
   if(req.roles.includes(ROLES_LIST.Admin || news.username === req.user)){
     const result = await News.deleteOne({_id:req.params.id})
     res.status(200).json(result)

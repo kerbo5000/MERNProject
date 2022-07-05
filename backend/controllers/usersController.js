@@ -22,7 +22,9 @@ const getUser = async (req,res) => {
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(user)
   }else{
-    res.status(200).json({user.username,user.roles,user.id})
+    res.status(200).json({username:user.username,
+                          roles:user.roles,
+                          id:user.id})
   }
 }
 
@@ -46,7 +48,10 @@ const updateUserPwd = async (req,res) => {
     if(match){
       user.password = req.body.newPassword
       const result = await user.save()
-      res.status(200).json({result.firstname,result.lastname,result.username,result.id})
+      res.status(200).json({firstname:result.firstname,
+                            lastname:result.lastname,
+                            username:result.username,
+                            id:result.id})
     }
   }
 }
@@ -66,6 +71,6 @@ module.exports = {
   getUsers,
   getUser,
   updateUserPwd,
-  deleteUser
+  deleteUser,
   getUserLikes
 }

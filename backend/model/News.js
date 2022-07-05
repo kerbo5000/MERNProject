@@ -24,4 +24,4 @@ const newsSchema = new Schema({
     }
   }],
 })
-module.exports = mongoose.model('News',employeeSchema)
+module.exports = mongoose.model('News',newsSchema)

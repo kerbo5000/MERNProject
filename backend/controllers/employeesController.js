@@ -22,8 +22,16 @@ const getEmployees = async (req,res) => {
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(employees)
   }else{
-    employees = employees.map((employee) => {employee.firstname,employee.lastname,employee.username,employee.id,employee.roles})
-    res.status(200).json(employee)
+    employees = employees.map((employee) => (
+      {
+        firstname:employee.firstname,
+        lastname:employee.lastname,
+        username:employee.username,
+        id:employee.id,
+        roles:employee.roles
+      }
+    ))
+    res.status(200).json(employees)
   }
 }
 const getEmployeeById = async (req,res) => {
@@ -38,7 +46,11 @@ const getEmployeeById = async (req,res) => {
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(employee)
   }else{
-    res.status(200).json({employee.firstname,employee.lastname,employee.username,employee.id})
+    res.status(200).json({firstname:employee.firstname,
+                          lastname:employee.lastname,
+                          username:employee.username,
+                          id:employee.id
+                        })
   }
 }
 const createNewEmployee = async (req,res) => {
@@ -46,11 +58,12 @@ const createNewEmployee = async (req,res) => {
     res.status(400).json({'message':'first and last name are required.'})
   }
   const firstname = req.body.firstname
-  const lasttname = req.body.lastname
-  let username = text.slice(0,firstname.length/2) + text.slice(0,lastname.length/2)
-  const password = text.slice(firstname.length/2) + text.slice(lastname.length/2)
+  const lastname = req.body.lastname
+  let username = firstname.slice(0,firstname.length/2) + lastname.slice(0,lastname.length/2)
+  const password = firstname.slice(firstname.length/2) + lastname.slice(lastname.length/2)
+  console.log(password)
   const hashPwd = await bcrypt.hash(password,10)
-  while(await Employee.find({username})){
+  while(await Employee.findOne({username})){
     username += Math.floor(Math.random()*10)
   }
   try{
@@ -93,7 +106,10 @@ const updateEmployeePwd = async (req,res) => {
     if(match){
       employee.password = req.body.newPassword
       const result = await employee.save()
-      res.status(200).json({result.firstname,result.lastname,result.username,result.id})
+      res.status(200).json({firstname:result.firstname,
+                            lastname:result.lastname,
+                            username:result.username,
+                            id:result.id})
     }
   }
 }
@@ -107,7 +123,7 @@ const updateEmployeeRole = async (req,res) => {
   //   res.status(204).json({'message':`No employee with ID: ${req.params.id}`})
   // }
   const employee = req.target
-  employee.role = {...employee.role,Admin=5150}
+  employee.roles = {...employee.roles, Admin:5150}
   const result = await employee.save()
   res.status(200).json(result)
 }
@@ -127,6 +143,7 @@ module.exports = {
   getEmployees,
   createNewEmployee,
   updateEmployeePwd,
+  updateEmployeeRole,
   deleteEmployee,
   getEmployeeById
 }

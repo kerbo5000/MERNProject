@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {
-  getAEmployees,
+  getEmployees,
   createNewEmployee,
   updateEmployeePwd,
   deleteEmployee,
@@ -16,14 +16,16 @@ router.route('/')
   .get(getEmployees)
   .post(verifyRoles(ROLES_LIST.Admin),createNewEmployee)
 
-router.route('/:employeeId',verifyId('employee'))
-  .get(getEmployeeById)
+// router.use(verifyId('employee'))
+
+router.route('/:employeeId')
+  .get(verifyId('employee'),getEmployeeById)
   .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
 
-router.route('/:employeeId/password',verifyId('employee'))
+router.route('/:employeeId/password')
   .put(updateEmployeePwd)
 
-router.route('/:employeeId/roles',verifyRoles(ROLES_LIST.Admin),verifyId('employee'))
+router.route('/:employeeId/roles',verifyRoles(ROLES_LIST.Admin))
   .put(updateEmployeeRole)
 
 

@@ -15,7 +15,7 @@ const handleLogin = async (req,res) => {
   let foundUser
   if(type === 'user'){
     foundUser = await User.findOne({username:user}).exec()
-  }else if(type === 'employee')
+  }else if(type === 'employee'){
     foundUser = await Employee.findOne({username:user}).exec()
   }else{
     return res.status(400).json({'message': 'not accepteble type parameter'})
@@ -35,7 +35,7 @@ const handleLogin = async (req,res) => {
         }
       },
       process.env.ACCESS_TOKEN_SECRET,
-      {expiresIn:'30s'}
+      {expiresIn:'1h'}
     )
     const refreshToken = jwt.sign(
       {
@@ -50,6 +50,7 @@ const handleLogin = async (req,res) => {
     res.cookie('jwt',refreshToken,{httpOnly:true,sameSite:'None',secure:true,maxAge:24*60*60*1000})
     res.json({accessToken,roles})
   }else{
+    console.log('hi')
     res.sendStatus(401)
   }
 }
