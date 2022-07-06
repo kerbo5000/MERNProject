@@ -92,7 +92,7 @@ const updateEmployeePwd = async (req,res) => {
     if(!req?.body?.newPassword){
       res.status(400).json({'message':'New password required'})
     }
-    employee.password = req.body.newPassword
+    employee.password = await bcrypt.hash(req.body.newPassword,10)
     const result = await employee.save()
     res.status(200).json(result)
   }else{
@@ -104,7 +104,7 @@ const updateEmployeePwd = async (req,res) => {
     }
     const match = await bcrypt.compare(req.body.oldPassword,employee.password)
     if(match){
-      employee.password = req.body.newPassword
+      employee.password = await bcrypt.hash(req.body.newPassword,10)
       const result = await employee.save()
       res.status(200).json({firstname:result.firstname,
                             lastname:result.lastname,
@@ -136,7 +136,8 @@ const deleteEmployee = async (req,res) => {
   // if(!employee){
   //   return res.status(204).json({'message':`No employee matches ID ${req.params.id}`})
   // }
-  const result = await Employee.deleteOne({_id:req.params.id})
+  console.log(req.target._id)
+  const result = await Employee.deleteOne({_id:req.target._id})
   res.status(200).json(result)
 }
 module.exports = {

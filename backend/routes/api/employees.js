@@ -20,13 +20,13 @@ router.route('/')
 
 router.route('/:employeeId')
   .get(verifyId('employee'),getEmployeeById)
-  .delete(verifyRoles(ROLES_LIST.Admin),deleteEmployee)
+  .delete(verifyRoles(ROLES_LIST.Admin),verifyId('employee'),deleteEmployee)
 
 router.route('/:employeeId/password')
-  .put(updateEmployeePwd)
+  .put(verifyId('employee'),updateEmployeePwd)
 
-router.route('/:employeeId/roles',verifyRoles(ROLES_LIST.Admin))
-  .put(updateEmployeeRole)
+router.route('/:employeeId/roles')
+  .put(verifyId('employee'),verifyRoles(ROLES_LIST.Admin),updateEmployeeRole)
 
 
 
