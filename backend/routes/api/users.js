@@ -14,14 +14,12 @@ const verifyId = require('../../middleware/verifyId')
 router.route('/')
   .get(getUsers)
 
-router.route('/:userId',verifyId('user'))
-  .get(getUser)
+router.route('/:userId')
+  .get(verifyId('user'),getUser)
+  .put(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'),updateUserPwd)
+  .delete(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'),deleteUser)
 
-router.route('/:userId',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'))
-  .put(updateUserPwd)
-  .delete(deleteUser)
-
-router.route('/:userId/likes',verifyId('user'))
-  .get(getUserLikes)
+router.route('/:userId/likes')
+  .get(verifyId('user'),getUserLikes)
 
 module.exports = router

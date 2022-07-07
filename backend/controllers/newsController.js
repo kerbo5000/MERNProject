@@ -158,6 +158,7 @@ const updateNews = async (req,res) => {
 }
 
 const deleteNews = async (req,res) => {
+  const news = req.target
   if(req.roles.includes(ROLES_LIST.Admin) || news.username === req.user){
     const result = await News.deleteOne({_id:req.target._id})
     return res.status(200).json(result)
