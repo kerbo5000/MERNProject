@@ -19,9 +19,7 @@ const newsSchema = new Schema({
   },
   comments:[{
     body:String,
-    from: {
-      type: mongoose.Schema.Types.ObjectId
-    }
+    from: String
   }],
 })
 module.exports = mongoose.model('News',newsSchema)

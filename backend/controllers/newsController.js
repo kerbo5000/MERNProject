@@ -1,5 +1,6 @@
 const News = require('../model/News')
 const User = require('../model/User')
+const ROLES_LIST = require('../config/roles_list')
 const getNews = async (req,res) => {
   let news = await News.find()
   if(req?.query?.title){
@@ -11,14 +12,14 @@ const getNews = async (req,res) => {
     news = news.filter((newIndex) => newIndex.username === username )
   }
   if(!news.length){
-    res.status(204).json({'message':'No news'})
+    return res.status(204).json({'message':'No news'})
   }
-  res.status(200).json(news)
+  return res.status(200).json(news)
 }
 
 const createNews = async (req,res) => {
   if(!req?.body?.title || !req?.body?.body ){
-    res.status(400).json({'message':'title and body are required.'})
+    return res.status(400).json({'message':'title and body are required.'})
   }
   const title = req.body.title
   const body = req.body.body
@@ -30,7 +31,7 @@ const createNews = async (req,res) => {
     })
     res.status(201).json(news)
   } catch(err){
-    res.status(500).json({'message':err.message})
+    return res.status(500).json({'message':err.message})
   }
 }
 
@@ -43,7 +44,7 @@ const getNewsById = async (req,res) => {
   //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
   // }
   const news = req.target
-  res.status(200).json(news)
+  return res.status(200).json(news)
 }
 
 const likeNews = async (req,res) => {
@@ -57,10 +58,11 @@ const likeNews = async (req,res) => {
   const news = req.target
   news.likes = news.likes + 1
   const user = await User.findOne({username:req.user})
+  console.log()
   user.news.push(news._id)
   user.save()
   const result = await news.save()
-  res.status(200).json(result)
+  return res.status(200).json(result)
 }
 
 const getComments = async (req,res) => {
@@ -72,7 +74,7 @@ const getComments = async (req,res) => {
   //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
   // }
   const news = req.target
-  res.status(200).json(news.comments)
+  return res.status(200).json(news.comments)
 }
 
 const addComment = async (req,res) => {
@@ -86,13 +88,13 @@ const addComment = async (req,res) => {
   // }
 
   if(!req?.body?.body ){
-    res.status(400).json({'message':'Comment body is required.'})
+    return res.status(400).json({'message':'Comment body is required.'})
   }
   const news = req.target
   const body = req.body.body
   news.comments.push({body,from:req.user})
   const result = await news.save()
-  res.status(200).json(result)
+  return res.status(200).json(result)
 }
 
 const getCommentByIndex = async (req,res) => {
@@ -105,13 +107,13 @@ const getCommentByIndex = async (req,res) => {
   //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
   // }
   if(!req?.params?.commentIndex){
-    res.status(400).json({'message':'Comment index parameter is required'})
+    return res.status(400).json({'message':'Comment index parameter is required'})
   }
   const news = req.target
-  if(newx.comments.length<req.params.commentIndex ){
-    res.status(400).json({'message':'Index out ouf bounds'})
+  if(news.comments.length<req.params.commentIndex ){
+    return res.status(400).json({'message':'Index out ouf bounds'})
   }
-  res.status(200).json(news.comments[req.params.commentIndex])
+  return res.status(200).json(news.comments[req.params.commentIndex])
 }
 
 const deleteComment = async (req,res) => {
@@ -119,17 +121,18 @@ const deleteComment = async (req,res) => {
   //   res.status(400).json({'message':'ID parameter is required'})
   // }
   if(!req?.params?.commentIndex){
-    res.status(400).json({'message':'Comment index parameter is required'})
+    return res.status(400).json({'message':'Comment index parameter is required'})
   }
   const news = req.target
-  if(newx.comments.length<req.params.commentIndex ){
-    res.status(400).json({'message':'Index out ouf bounds'})
+  if(news.comments.length<=req.params.commentIndex ){
+    return res.status(400).json({'message':'Index out ouf bounds'})
   }
-  if(req.roles.includes(ROLES_LIST.Admin) || req.roles.includes(ROLES_LIST.Editor) || comment.username == req.user ){
-      const comment = news.comments[req.params.commentIndex]
+  console.log(news.comments)
+  const comment = news.comments[req.params.commentIndex]
+  if(req.roles.includes(ROLES_LIST.Admin) || req.roles.includes(ROLES_LIST.Editor) || comment.from == req.user ){
       news.comments.splice(req.params.commentIndex,1)
       const result = await news.save()
-      res.status(200).json(result)
+      return res.status(200).json(result)
   }else{
     return res.sendStatus(405)
   }
@@ -137,8 +140,8 @@ const deleteComment = async (req,res) => {
 
 const updateNews = async (req,res) => {
   const news = req.target
-  if(!req?.body?.title || !req?.body?.body ){
-    res.status(400).json({'message':'title or body is required.'})
+  if(!req?.body?.title && !req?.body?.body ){
+    return res.status(400).json({'message':'title or body is required.'})
   }
   if(req.roles.includes(ROLES_LIST.Admin || news.username === req.user)){
     if(req?.body?.body){
@@ -148,16 +151,16 @@ const updateNews = async (req,res) => {
       news.body = req.body.body
     }
     const result = await news.save()
-    res.status(200).json(result)
+    return res.status(200).json(result)
   }else{
     return res.sendStatus(405)
   }
 }
 
 const deleteNews = async (req,res) => {
-  if(req.roles.includes(ROLES_LIST.Admin || news.username === req.user)){
-    const result = await News.deleteOne({_id:req.params.id})
-    res.status(200).json(result)
+  if(req.roles.includes(ROLES_LIST.Admin) || news.username === req.user){
+    const result = await News.deleteOne({_id:req.target._id})
+    return res.status(200).json(result)
   }else{
     return res.sendStatus(405)
   }

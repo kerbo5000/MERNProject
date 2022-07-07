@@ -20,25 +20,25 @@ const verifyId = require('../../middleware/verifyId')
 router.route('/')
   .get(getNews)
 
-router.route('/',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor))
-  .post(createNews)
+router.route('/')
+  .post(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),createNews)
 
-router.route('/:newsId',verifyId('news'))
-  .get(getNewsById)
+router.route('/:newsId')
+  .get(verifyId('news'),getNewsById)
 
-router.route('/:newsId/likes',verifyId('news'))
-  .put(likeNews)
+router.route('/:newsId/likes')
+  .put(verifyId('news'),likeNews)
 
-router.route('/:newsId/comments',verifyId('news'))
-  .get(getComments)
-  .post(addComment)
+router.route('/:newsId/comments')
+  .get(verifyId('news'),getComments)
+  .post(verifyId('news'),addComment)
 
-router.route('/:newsId/comments/:commentIndex',verifyId('news'))
-  .get(getCommentByIndex)
-  .delete(deleteComment)
+router.route('/:newsId/comments/:commentIndex')
+  .get(verifyId('news'),getCommentByIndex)
+  .delete(verifyId('news'),deleteComment)
 
-router.route('/:newsId',verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),verifyId('news'))
-  .put(updateNews)
-  .delete(deleteNews)
+router.route('/:newsId')
+  .put(verifyId('news'),verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),updateNews)
+  .delete(verifyId('news'),verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),deleteNews)
 
 module.exports = router

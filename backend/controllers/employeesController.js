@@ -17,10 +17,10 @@ const getEmployees = async (req,res) => {
     employees = employees.filter((employee) => employee.username === username )
   }
   if(!employees.length){
-    res.status(204).json({'message':'No employee'})
+    return res.status(204).json({'message':'No employee'})
   }
   if(req.roles.includes(ROLES_LIST.Admin)){
-    res.status(200).json(employees)
+    return res.status(200).json(employees)
   }else{
     employees = employees.map((employee) => (
       {
@@ -31,7 +31,7 @@ const getEmployees = async (req,res) => {
         roles:employee.roles
       }
     ))
-    res.status(200).json(employees)
+    return res.status(200).json(employees)
   }
 }
 const getEmployeeById = async (req,res) => {
@@ -44,9 +44,9 @@ const getEmployeeById = async (req,res) => {
   // }
   const employee = req.target
   if(req.roles.includes(ROLES_LIST.Admin)){
-    res.status(200).json(employee)
+    return res.status(200).json(employee)
   }else{
-    res.status(200).json({firstname:employee.firstname,
+    return res.status(200).json({firstname:employee.firstname,
                           lastname:employee.lastname,
                           username:employee.username,
                           id:employee.id
@@ -55,7 +55,7 @@ const getEmployeeById = async (req,res) => {
 }
 const createNewEmployee = async (req,res) => {
   if(!req?.body?.firstname || !req?.body?.lastname ){
-    res.status(400).json({'message':'first and last name are required.'})
+    return res.status(400).json({'message':'first and last name are required.'})
   }
   const firstname = req.body.firstname
   const lastname = req.body.lastname
@@ -73,7 +73,7 @@ const createNewEmployee = async (req,res) => {
       username,
       password:hashPwd,
     })
-    res.status(201).json(employee)
+    return res.status(201).json(employee)
   }catch (err){
     console.error(err)
   }
@@ -90,23 +90,23 @@ const updateEmployeePwd = async (req,res) => {
   const employee = req.target
   if(req.roles.includes(ROLES_LIST.Admin)){
     if(!req?.body?.newPassword){
-      res.status(400).json({'message':'New password required'})
+      return res.status(400).json({'message':'New password required'})
     }
     employee.password = await bcrypt.hash(req.body.newPassword,10)
     const result = await employee.save()
-    res.status(200).json(result)
+    return res.status(200).json(result)
   }else{
     if(req.user !== employee.username){
       return res.sendStatus(405)
     }
     if(!req?.body?.newPassword || !req?.body?.oldPassword){
-      res.status(400).json({'message':'New and old password required'})
+      return res.status(400).json({'message':'New and old password required'})
     }
     const match = await bcrypt.compare(req.body.oldPassword,employee.password)
     if(match){
       employee.password = await bcrypt.hash(req.body.newPassword,10)
       const result = await employee.save()
-      res.status(200).json({firstname:result.firstname,
+      return res.status(200).json({firstname:result.firstname,
                             lastname:result.lastname,
                             username:result.username,
                             id:result.id})
@@ -125,7 +125,7 @@ const updateEmployeeRole = async (req,res) => {
   const employee = req.target
   employee.roles = {...employee.roles, Admin:5150}
   const result = await employee.save()
-  res.status(200).json(result)
+  return res.status(200).json(result)
 }
 
 const deleteEmployee = async (req,res) => {
@@ -136,9 +136,8 @@ const deleteEmployee = async (req,res) => {
   // if(!employee){
   //   return res.status(204).json({'message':`No employee matches ID ${req.params.id}`})
   // }
-  console.log(req.target._id)
   const result = await Employee.deleteOne({_id:req.target._id})
-  res.status(200).json(result)
+  return res.status(200).json(result)
 }
 module.exports = {
   getEmployees,
