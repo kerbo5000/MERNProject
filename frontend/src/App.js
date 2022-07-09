@@ -17,22 +17,23 @@ function App() {
     <Routes>
       <Route path='/' element={<Layout />}>
         /*public*/
-        <Route path='login' element={<Login />}/>
-        <Route path='register' element={<Register />}/>
-        <Route path='linkpage' element={<LinkPage />}/>
-        <Route path='unauthorized' element={<Unauthorized />}/>
+        <Route path='/linkpage' element={<LinkPage />}/>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/register' element={<Register />}/>
+
+        <Route path='/unauthorized' element={<Unauthorized />}/>
         /*private*/
         <Route element={<RequiredAuth allowedRoles={[2001]}/>}>
           <Route path='/' element={<Home />}/>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[1984]}/>}>
-          <Route path='editor' element={<Editor />}/>
+          <Route path='/editor' element={<Editor />}/>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[5150]}/>}>
-          <Route path='admin' element={<Admin />}/>
+          <Route path='/admin' element={<Admin />}/>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[5150,1984]}/>}>
-          <Route path='lounge' element={<Lounge />}/>
+          <Route path='/lounge' element={<Lounge />}/>
         </Route>
         /*catch all*/
         <Route path='*' element={<Missing />}/>

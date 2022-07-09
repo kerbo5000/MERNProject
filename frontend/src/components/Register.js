@@ -71,10 +71,7 @@ function Register() {
     }
   }
   return (
-        <Card>
-          <Card.Header as="h1">Blog</Card.Header>
           <Card.Body>
-            <Card.Title as="h3">Register</Card.Title>
             {errMsg &&
               <Alert variant='danger'>
                 {errMsg}
@@ -138,7 +135,6 @@ function Register() {
               </Button>
             </Form>
           </Card.Body>
-        </Card>
   );
 }
 

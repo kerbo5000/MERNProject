@@ -1,11 +1,17 @@
+
 import { Outlet } from "react-router-dom"
 import Container from 'react-bootstrap/Container'
-
+import Card from 'react-bootstrap/Card'
+import Header from './Header'
 const Layout = () => {
+
     return (
         <Container className='d-flex min-vh-100 w-50 align-items-center justify-content-center'>
           <div className="jumbotron flex-fill">
-            <Outlet />
+            <Card>
+              <Header />
+              <Outlet />
+            </Card>
           </div>
         </Container>
     )

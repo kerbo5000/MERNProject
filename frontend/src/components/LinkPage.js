@@ -3,8 +3,7 @@ import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 const LinkPage = () => {
     return (
-        <Card style={{ width: '18rem' }}>
-          <Card.Header as="h1">Blog</Card.Header>
+      <>
           <Card.Body>
             <Card.Title as="h3">Link</Card.Title>
             <Card.Text>
@@ -36,7 +35,7 @@ const LinkPage = () => {
                   </Link>
                 </ListGroup>
             </Card.Body>
-        </Card>
+        </>
     )
 }
 

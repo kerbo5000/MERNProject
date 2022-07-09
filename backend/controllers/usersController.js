@@ -79,7 +79,6 @@ const deleteUser = async (req,res) => {
 
 const getUserLikes = async (req,res) => {
   const user = req.target
-  console.log(user)
   console.log(user.news)
   const records = await News.find({_id: {$in: user.news}})
   res.status(200).json(records)

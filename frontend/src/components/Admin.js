@@ -4,8 +4,7 @@ import Users from './Users'
 
 const Admin = () => {
     return (
-      <Card>
-        <Card.Header as="h1">Blog</Card.Header>
+      <>
         <Card.Body>
           <Card.Title as="h3">Admins Page</Card.Title>
         </Card.Body>
@@ -15,7 +14,7 @@ const Admin = () => {
             <Card.Link >Home</Card.Link>
           </Link>
         </Card.Body>
-    </Card>
+      </>
     )
 }
 
