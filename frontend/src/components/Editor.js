@@ -1,17 +1,30 @@
-import { Link } from "react-router-dom"
-import Card from 'react-bootstrap/Card'
+import { Outlet,Link } from "react-router-dom"
+import {useState,useEffect} from 'react'
 
 const Editor = () => {
+    const [tab,setTab] = useState('news')
     return (
-        <Card.Body>
-          <Card.Title as="h3">Editors Page</Card.Title>
-          <Card.Text>
-            You must have been assigned an Editor role.
-          </Card.Text>
-          <Link to="/">
-            <Card.Link >Home</Card.Link>
+      <div className="card-body">
+        <h5 className="card-title">Editor</h5>
+        <ul className="nav nav-tabs">
+          <Link to='/editor/news' style={{textDecoration:'none'}}>
+            <li className="nav-item">
+              <a className={`nav-link ${tab === 'news' ? 'active':''}`} onClick={()=>setTab('news')}>News</a>
+            </li>
           </Link>
-        </Card.Body>
+          <Link to='/editor/users' style={{textDecoration:'none'}}>
+            <li className="nav-item">
+              <a className={`nav-link ${tab === 'user' ? 'active':''}`} onClick={()=>setTab('user')}>Users</a>
+            </li>
+          </Link>
+          <Link to='/editor/employees' style={{textDecoration:'none'}}>
+            <li className="nav-item">
+              <a className={`nav-link ${tab === 'employee' ? 'active':''}`} onClick={()=>setTab('employee')}>Employees</a>
+            </li>
+          </Link>
+        </ul>
+        <Outlet/>
+      </div>
     )
 }
 

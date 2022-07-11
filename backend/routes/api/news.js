@@ -25,7 +25,7 @@ router.route('/')
 router.route('/:newsId')
   .get(verifyId('news'),getNewsById)
 
-router.route('/:newsId/likes')
+router.route('/:newsId/likes/:type')
   .put(verifyId('news'),likeNews)
 
 router.route('/:newsId/comments')

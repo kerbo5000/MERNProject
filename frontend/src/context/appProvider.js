@@ -2,8 +2,10 @@ import {createContext,useReducer} from 'react'
 import { useNavigate} from "react-router-dom"
 import authReducer from '../reducers/authReducer'
 import newsReducer from '../reducers/newsReducer'
+// import userReducer from '../reducers/userReducer'
 import authRequest from '../api/authRequest'
 import newsRequest from '../api/newsRequest'
+// import userRequest from '../api/userRequest'
 const AppContext = createContext()
 const authInitialState = {
   loading: false,
@@ -19,10 +21,17 @@ const newsInitialState = {
   error:'',
   success:false,
 }
+// const userInitialState = {
+//   loading: false,
+//   users:[],
+//   error:'',
+//   success:false,
+// }
 export const AppProvider = ({children}) => {
   const navigate = useNavigate()
   const [authState,authDispatch] = useReducer(authReducer,authInitialState)
   const [newsState,newsDispatch] = useReducer(newsReducer,newsInitialState)
+  // const [userState,userDispatch] = useReducer(userReducer,userInitialState)
   const register = async (user,pwd) => {
     try{
       authDispatch({type:'LOADING'})
@@ -85,9 +94,9 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const likeNews = async (axiosPrivate,id,location) => {
+  const likeNews = async (axiosPrivate,id,type,location) => {
     try{
-      const response = await newsRequest.likeNews(axiosPrivate,id)
+      const response = await newsRequest.likeNews(axiosPrivate,id,type)
       newsDispatch({type:'LIKE_COMMENT_NEWS',payload:response})
     }catch(err){
       console.error(err)

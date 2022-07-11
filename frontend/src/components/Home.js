@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 const Home = () => {
     // const [news,setNews] = useState()
-    const {newsState,getNews,reset,likeNews,searchNews} = useGlobalContext()
+    const {newsState,getNews,reset,searchNews} = useGlobalContext()
     const {loading,error,success,news} = newsState
     const navigate = useNavigate()
     const axiosPrivate = useAxiosPrivate()
@@ -20,9 +20,10 @@ const Home = () => {
                                         inputText:'',
                                         inputRadio:''
                                         })
-    // const [likes,setLikes] = useState([])
+    // const [likes,setLikes] = useState(false)
     useEffect(()=>{
       getNews(axiosPrivate,location)
+
       return () => {
         reset('news')
       }
@@ -107,7 +108,7 @@ const Home = () => {
           </div>
         ): news?.length ?  (<div className="container">
             {news.map((article) => {
-              return <News key={article._id} {...article} likeNews={() => likeNews(axiosPrivate,article._id,location)}/>
+              return <News key={article._id} {...article}/>
             })}
           </div>):(<Card.Body>
             <Card.Text>

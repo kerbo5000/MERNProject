@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 const userSchema = new Schema({
   username:{
     type:String,
-    required:true
+    required:true,
+    unique:true
   },
   roles:{
     User:{
@@ -17,9 +18,9 @@ const userSchema = new Schema({
     type:String,
     required:true
   },
-  refreshToken:String,
-  news:[{
-    type: mongoose.Schema.Types.ObjectId
-  }]
+  refreshToken:String
+  // news:[{
+  //   type: mongoose.Schema.Types.ObjectId
+  // }]
 })
 module.exports = mongoose.model('User',userSchema)

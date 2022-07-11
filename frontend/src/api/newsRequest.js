@@ -3,8 +3,8 @@ const getNews = async (axiosPrivate) => {
   return response.data
 }
 
-const likeNews = async (axiosPrivate,id) => {
-  const response = await axiosPrivate.put(`/news/${id}/likes`)
+const likeNews = async (axiosPrivate,id,type) => {
+  const response = await axiosPrivate.put(`/news/${id}/likes/${type}`)
   return response.data
 }
 

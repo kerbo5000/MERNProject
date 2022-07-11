@@ -57,11 +57,28 @@ const likeNews = async (req,res) => {
   //   res.status(204).json({'message':`No news with ID: ${req.params.id}`})
   // }
   const news = req.target
-  news.likes = news.likes + 1
-  const user = await User.findOne({username:req.user})
-  console.log()
-  user.news.push(news._id)
-  user.save()
+  // const user = await User.findOne({username:req.user})
+  if(!req?.params?.type){
+    return res.status(400).json({'message': 'type parameter missing'})
+  }
+  const type = req.params.type
+  if(type === 'like'){
+    const index  = news.likes.indexOf(req.user)
+    if(index > -1 ){
+      return res.status(200).json({'message': 'news already liked'})
+    }else{
+      news.likes.push(req.user)
+    }
+  }else if(type === 'unlike'){
+    const index  = news.likes.indexOf(req.user)
+    if(index > -1 ){
+      news.likes.splice(index,1)
+    }else{
+      return res.status(200).json({'message': 'news wasn\'t liked'})
+    }
+  }else{
+    return res.status(400).json({'message': 'not accepteble type parameter'})
+  }
   const result = await news.save()
   return res.status(200).json(result)
 }

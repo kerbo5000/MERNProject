@@ -13,10 +13,9 @@ const newsSchema = new Schema({
     type: String,
     required:true
   },
-  likes:{
-    type:Number,
-    default:0
-  },
+  likes:[{
+    type:String,
+  }],
   comments:[{
     body:String,
     from: String

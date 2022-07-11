@@ -1,12 +1,29 @@
-import { useState } from 'react'
-import Button from 'react-bootstrap/Button'
-import Collapse from 'react-bootstrap/Collapse'
+import { useState,useEffect } from 'react'
 import Comments from './Comments'
-import Card from 'react-bootstrap/Card'
-import Badge from 'react-bootstrap/Badge'
-
-const News = ({_id,username,title,body,comments,likes,likeNews}) => {
+import {useLocation } from "react-router-dom"
+import useGlobalContext from '../hooks/useGlobalContext'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+const News = ({_id,username,title,body,comments,likes}) => {
+  const {authState,likeNews} = useGlobalContext()
   const [open, setOpen] = useState(false);
+  const {user} = authState
+  const [liked,setLiked] = useState(likes.includes(user))
+  const axiosPrivate = useAxiosPrivate()
+  const location = useLocation()
+
+  const likeBtn = () => {
+    setLiked((prev) => {
+      console.log(`${title} from ${prev} to ${!prev}`)
+      return !prev
+    })
+  }
+  useEffect(()=>{
+    if(liked){
+      likeNews(axiosPrivate,_id,'like',location)
+    }else{
+      likeNews(axiosPrivate,_id,'unlike',location)
+    }
+  },[liked])
 
   return (
     <div className="clearfix mt-2">
@@ -18,8 +35,8 @@ const News = ({_id,username,title,body,comments,likes,likeNews}) => {
             <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{username}</cite></footer>
           </blockquote>
           <div className="btn-group mt-2" role="group" aria-label="Basic example">
-            <button type="button" className="btn btn-primary shadow-none" onClick={likeNews}>
-              Like <span className="badge text-bg-secondary">{likes}</span>
+            <button type="button" className={`shadow-none btn ${liked ?'btn-danger':'btn-secondary'}`} onClick={likeBtn}>
+              Like <span className="badge text-bg-dark">{likes.length}</span>
             </button>
             <button className="btn btn-primary shadow-none" type="button" data-bs-toggle="collapse" data-bs-target={`#comments${_id}`} aria-expanded="false" aria-controls={`comments${_id}`}>
               Comments
