@@ -6,7 +6,7 @@ import Header from './Header'
 const Layout = () => {
 
     return (
-        <Container className='d-flex min-vh-100 w-50 align-items-center justify-content-center'>
+        <Container className='d-flex min-vh-100 w-100 align-items-center justify-content-center'>
           <div className="jumbotron flex-fill">
             <Card>
               <Header />

@@ -1,18 +1,17 @@
-import axios from '../api/axios'
-import useAuth from './useAuth'
+import axios from '../axios/axiosInstances'
+import useGlobalContext from '../hooks/useGlobalContext'
 
 const useRefreshToken = () => {
-  const {setAuth} = useAuth()
-  const refresh = async () => {
-    const response = await axios.get('/refresh',{
-      withCredentials:true
-    })
-    setAuth(prev => {
-      return {...prev, accesstoken:response.data.accesToken}
-    })
-    return response.data.accessToken
-  }
-  return refresh
-}
+    const {refreshAccessToken} = useGlobalContext()
 
-export default useRefreshToken
+    const refresh = async () => {
+        const response = await axios.get('/refresh', {
+            withCredentials: true
+        });
+        refreshAccessToken(response.data.accesToken)
+        return response.data.accessToken;
+    }
+    return refresh;
+};
+
+export default useRefreshToken;

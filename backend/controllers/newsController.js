@@ -5,6 +5,7 @@ const getNews = async (req,res) => {
   let news = await News.find()
   if(req?.query?.title){
     const title = req.query.title
+    console.log(title)
     news = news.filter((newIndex) => newIndex.title === title )
   }
   if(req?.query?.username){
@@ -14,7 +15,7 @@ const getNews = async (req,res) => {
   if(!news.length){
     return res.status(204).json({'message':'No news'})
   }
-  return res.status(200).json(news)
+  res.status(200).json(news)
 }
 
 const createNews = async (req,res) => {

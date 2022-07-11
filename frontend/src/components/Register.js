@@ -1,5 +1,6 @@
 import {useRef,useState,useEffect} from 'react'
-import axios from '../api/axios'
+import useGlobalContext from '../hooks/useGlobalContext'
+import {Link} from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Card from 'react-bootstrap/Card'
@@ -7,7 +8,10 @@ import Alert from 'react-bootstrap/Alert'
 function Register() {
   const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/
   const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/
-  const REGISTER_URL = '/register'
+
+  const {authState,register,reset} = useGlobalContext()
+
+  const {loading,error,success} = authState
   const userRef = useRef()
 
   const [user,setUser] = useState('')
@@ -22,11 +26,9 @@ function Register() {
   const [validMatch,setValidMatch] = useState(false)
   const [matchFocus, setMatchFocus] = useState(false)
 
-  const [errMsg,setErrMsg] = useState('')
-  const [success,setSuccess] = useState(false)
-
   useEffect(() => {
-    userRef.current.focus()
+    userRef.current?.focus()
+    reset('auth')
   },[])
 
   useEffect(() => {
@@ -41,44 +43,51 @@ function Register() {
     setValidMatch(match)
   },[pwd,matchPwd])
 
-  useEffect(() => {
-    setErrMsg('')
-  },[user,pwd,matchPwd])
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    try{
-      const response = await axios.post(REGISTER_URL,
-        JSON.stringify({user,pwd}),
-        {
-          headers:{'Content-Type':'application/json'},
-          withCredentials:true
-        }
-      )
-      setSuccess(true)
+    register(user,pwd)
+  }
+  useEffect(()=> {
+    if(success){
       setUser('')
       setPwd('')
       setMatchPwd('')
-    } catch (err){
-      console.log(err.message)
-      if(!err?.response){
-        setErrMsg('No server response')
-      }else if(err.response?.status === 409){
-        setErrMsg('Username Taken')
-      }else{
-        setErrMsg('Regisration failed')
-      }
     }
+  },[success])
+  
+  if(loading){
+    return (
+      <div className="card-body">
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      )
+  }
+  if(success){
+    return (
+      <div className="card-body">
+        <h5 className="card-title">Registration done</h5>
+        <p className="card-text">Your account has been created</p>
+        <Link to="/">
+          <div className="d-grid gap-2 col-6 mx-auto">
+            <button type="button" className="btn btn-primary btn-lg">Login</button>
+          </div>
+        </Link>
+      </div>
+      )
   }
   return (
           <Card.Body>
-            {errMsg &&
-              <Alert variant='danger'>
-                {errMsg}
-              </Alert>
+            {error &&
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
             }
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Group className="mb-3">
                 <Form.Label>Username:</Form.Label>
                 <Form.Control
                   type="text"
@@ -97,7 +106,7 @@ function Register() {
                   </Alert>
                 }
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Group className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
@@ -114,7 +123,7 @@ function Register() {
                   </Alert>
                 }
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Group className="mb-3">
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control
                   type="password"

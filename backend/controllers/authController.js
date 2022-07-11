@@ -50,7 +50,6 @@ const handleLogin = async (req,res) => {
     res.cookie('jwt',refreshToken,{httpOnly:true,sameSite:'None',secure:true,maxAge:24*60*60*1000})
     res.json({accessToken,roles})
   }else{
-    console.log('hi')
     res.sendStatus(401)
   }
 }

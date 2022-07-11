@@ -1,12 +1,12 @@
 import {useLocation,Navigate,Outlet} from 'react-router-dom'
-import useAuth from '../hooks/useAuth'
+import useGlobalContext from '../hooks/useGlobalContext'
 const RequiredAuth = ({allowedRoles}) => {
-  const {auth} = useAuth()
+  const {authState} = useGlobalContext()
   const location = useLocation()
   return(
-    auth?.roles.find(role => allowedRoles.includes(role)) ?
+    authState?.roles.find(role => allowedRoles.includes(role)) ?
       <Outlet/>
-      : auth?.user ?
+      : authState?.user ?
         <Navigate to='/unauthorized' state={{from: location}} replace />
         : <Navigate to='/login' state={{from: location}} replace />
   )

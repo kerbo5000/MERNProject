@@ -1,6 +1,6 @@
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useLocation } from "react-router-dom"
 import {useState,useEffect} from 'react'
-import useAuth from '../hooks/useAuth'
+import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import News from './News'
 import Card from 'react-bootstrap/Card'
@@ -10,65 +10,58 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 const Home = () => {
-    const [news,setNews] = useState()
-    const {auth,setAuth} = useAuth()
+    // const [news,setNews] = useState()
+    const {newsState,getNews,reset,likeNews,searchNews} = useGlobalContext()
+    const {loading,error,success,news} = newsState
     const navigate = useNavigate()
-
+    const axiosPrivate = useAxiosPrivate()
+    const location = useLocation()
     const [search,setSearch] = useState({
                                         inputText:'',
                                         inputRadio:''
                                         })
+    // const [likes,setLikes] = useState([])
     useEffect(()=>{
-      let isMounted = true
-      const controller = new AbortController()
-      const getNews = async () => {
-        try{
-          const response = await axiosPrivate.get('/news',{
-            signal: controller.signal
-          })
-          isMounted && setNews(response.data)
-        } catch(err){
-          console.error(err)
-          navigate('/login',{state:{from:location},replace:true})
-        }
-      }
-      getNews()
+      getNews(axiosPrivate,location)
       return () => {
-        isMounted = false
-        controller.abort()
+        reset('news')
       }
     },[])
+
     const logout = async () => {
         // if used in more components, this should be in context
         // axios to /logout endpoint
-        setAuth({})
+        // setAuth({})
         navigate('/linkpage')
     }
 
+
     const handleInput = (e) => {
       setSearch(prevSearch => {
-        return {
-                ...prevSearch,
+        return {...prevSearch,
                 [e.target.name]:e.target.value
               }
       })
     }
-
+    const handleSubmit = (e) =>{
+      e.preventDefault()
+      searchNews(axiosPrivate,location,search)
+    }
     return (
       <>
         <Card.Body>
           <Card.Title as="h3">Home</Card.Title>
         </Card.Body>
         <Card.Body>
-          <Form>
-            <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group as={Row} className="mb-3">
               <Form.Label column sm={2}>
                 Search
               </Form.Label>
               <Col sm={10}>
                 <Form.Control
                   type="text"
-                  onChange={handleInput()}
+                  onChange={handleInput}
                   value={search.inputText}
                   name="inputText"
                   />
@@ -85,37 +78,43 @@ const Home = () => {
                     label="username"
                     name="inputRadio"
                     value="username"
-                    onChange={handleInput()}
+                    onChange={handleInput}
                   />
                   <Form.Check
                     type="radio"
                     label="title"
                     name="inputRadio"
                     value="title"
-                    onChange={handleInput()}
+                    onChange={handleInput}
                   />
                 </Col>
               </Form.Group>
             </fieldset>
             <Form.Group as={Row} className="mb-3">
               <Col sm={{ span: 10, offset: 2 }}>
-                <Button type="submit">Sign in</Button>
+                <Button type="submit">Search</Button>
               </Col>
             </Form.Group>
           </Form>
         </Card.Body>
-        {news?.length ?
-          <CardGroup>
-            ({news.map((article) => {
-              return <News key={article.id} {...article}/>
+        {loading ? (
+          <div className="card-body">
+            <div className="d-flex justify-content-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        ): news?.length ?  (<div className="container">
+            {news.map((article) => {
+              return <News key={article._id} {...article} likeNews={() => likeNews(axiosPrivate,article._id,location)}/>
             })}
-          </CradGroup>):
-          (<Card.Body>
+          </div>):(<Card.Body>
             <Card.Text>
               No news to display
             </Card.Text>
-          <Card.Body>
-        )}
+          </Card.Body>
+          )}
         <Button variant="primary" onClick={logout} >Sign Out</Button>
       </>
     )

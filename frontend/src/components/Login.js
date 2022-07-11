@@ -4,81 +4,72 @@ import Card from 'react-bootstrap/Card'
 import Alert from 'react-bootstrap/Alert'
 import Nav from 'react-bootstrap/Nav'
 import {useRef,useState,useEffect} from 'react'
-import {useNavigate,useLocation} from 'react-router-dom'
-import axios from '../api/axios'
-import useAuth from '../hooks/useAuth'
+import {useNavigate,useLocation,Link} from 'react-router-dom'
+import useGlobalContext from '../hooks/useGlobalContext'
 
 const Login = () => {
+    const {authState,login,reset} = useGlobalContext()
+    const {loading,error,success} = authState
 
-    const {setAuth} = useAuth()
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from?.pathname || '/'
     const userRef = useRef()
-    const [authUrl,setAuthUrl] = useState('/auth/user')
+    const [endpoint,setEndpoint] = useState('user')
     const [user,setUser] = useState('')
     const [pwd,setPwd] = useState('')
-    const [errMsg,setErrMsg] = useState('')
 
     useEffect(() => {
-      userRef.current.focus()
+      userRef.current?.focus()
+      reset('auth')
     },[])
 
-    useEffect(() => {
-      setErrMsg('')
-    },[user,pwd])
     const changeTab = (url) => {
       setUser('')
       setPwd('')
-      setAuthUrl(url)
+      setEndpoint(url)
     }
-    const handleSubmit = async (e) =>{
-      e.preventDefault()
-      try{
-        const response = await axios.post(authUrl,
-          JSON.stringify({user,pwd}),
-          {
-            headers:{'Content-Type':'application/json'},
-            withCredentials:true
-          }
-        )
 
-        const accessToken = response?.data?.accessToken
-        const roles = response?.data?.roles
-        setAuth({user,roles,accessToken})
+    const handleSubmit = (e) =>{
+      e.preventDefault()
+      login(user,pwd,endpoint)
+    }
+    useEffect(()=>{
+      if(success){
         setUser('')
         setPwd('')
         navigate(from,{replace:true})
-      } catch (err){
-        console.log(err.message)
-        if(!err?.response){
-          setErrMsg('No server response')
-        }else if(err.response?.status === 400){
-          setErrMsg('Missing username or password')
-        }else if(err.response?.status === 401){
-          setErrMsg('Unauthorized')
-        }else{
-          setErrMsg('Login failed')
-        }
       }
+    },[success])
+
+    if(loading){
+      return (
+        <div className="card-body">
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        )
     }
     return (
       <>
         <Card.Body>
           <Nav variant="tabs" defaultActiveKey={'user'}>
             <Nav.Item>
-              <Nav.Link onClick={()=>changeTab('/auth/user')} eventKey={'user'}>User</Nav.Link>
+              <Nav.Link onClick={()=>changeTab('user')} eventKey={'user'}>User</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link onClick={()=>changeTab('/auth/employee')} eventKey={'employee'}>Employee</Nav.Link>
+              <Nav.Link onClick={()=>changeTab('employee')} eventKey={'employee'}>Employee</Nav.Link>
             </Nav.Item>
           </Nav>
         </Card.Body>
         <Card.Body>
-          {errMsg &&
-            <Alert variant='danger'>
-              {errMsg}
-            </Alert>
+          {error &&
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
           }
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
