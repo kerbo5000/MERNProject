@@ -1,10 +1,9 @@
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Card from 'react-bootstrap/Card'
-import Alert from 'react-bootstrap/Alert'
 import Nav from 'react-bootstrap/Nav'
 import {useRef,useState,useEffect} from 'react'
-import {useNavigate,useLocation,Link} from 'react-router-dom'
+import {useNavigate,useLocation} from 'react-router-dom'
 import useGlobalContext from '../hooks/useGlobalContext'
 
 const Login = () => {
@@ -13,7 +12,7 @@ const Login = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
-    const from = location.state?.from?.pathname || '/'
+    const from = location.state?.from?.pathname || '/newsfeed'
     const userRef = useRef()
     const [endpoint,setEndpoint] = useState('user')
     const [user,setUser] = useState('')

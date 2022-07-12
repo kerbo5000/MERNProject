@@ -11,7 +11,8 @@ const authReducer = (state,action) => {
             accessToken:action.payload.accessToken,
             roles:action.payload.roles,
             success:true,
-            error:''
+            error:'',
+            id:action.payload.id
           }
   }
   if(action.type === 'ERROR'){

@@ -24,7 +24,6 @@ const verifyId = (type) => {
         if(!req?.params?.employeeId){
           return res.sendStatus(400)
         }
-        console.log('hi')
         if(mongoose.Types.ObjectId.isValid(req.params.employeeId)){
           let employee = await Employee.findById(req.params.employeeId)
           if(!employee){
@@ -33,7 +32,6 @@ const verifyId = (type) => {
           req.target = employee
           next()
         }else{
-          console.log('hii')
           return res.sendStatus(400)
         }
         break

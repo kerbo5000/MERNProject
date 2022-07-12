@@ -1,6 +1,8 @@
 import Register from './components/Register'
 import Login from './components/Login'
 import Home from './components/Home'
+import NewsFeed from './components/NewsFeed'
+import Favorites from './components/Favorites'
 import Layout from './components/Layout'
 import Editor from './components/Editor'
 import Admin from './components/Admin'
@@ -23,7 +25,10 @@ function App() {
         <Route path='unauthorized' element={<Unauthorized />}/>
         /*private*/
         <Route element={<RequiredAuth allowedRoles={[2001]}/>}>
-          <Route path='/' element={<Home />}/>
+          <Route path='/' element={<Home />}>
+            <Route path='newsfeed' element={<NewsFeed />}/>
+            <Route path='favorites' element={<Favorites />}/>
+          </Route>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[1984]}/>}>
           <Route path='editor' element={<Editor />}>

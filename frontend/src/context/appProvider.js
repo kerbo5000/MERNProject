@@ -14,6 +14,7 @@ const authInitialState = {
   accessToken:'',
   error:'',
   success:false,
+  id:''
 }
 const newsInitialState = {
   loading: false,
@@ -54,7 +55,8 @@ export const AppProvider = ({children}) => {
       const response = await authRequest.login(user,pwd,type)
       authDispatch({type:'LOGIN',payload:{user,
                                           roles:response.roles,
-                                          accessToken:response.accessToken
+                                          accessToken:response.accessToken,
+                                          id:response.id
                                     }})
     }catch(err){
       if(!err?.response){
@@ -124,7 +126,16 @@ export const AppProvider = ({children}) => {
       navigate('/login',{state:{from:location},replace:true})
     }
   }
-
+  const likedNews = async (axiosPrivate,location,id) => {
+    try{
+      newsDispatch({type:'LOADING'})
+      const response = await newsRequest.likedNews(axiosPrivate,id)
+      newsDispatch({type:'SET_NEWS',payload:response})
+    }catch(err){
+      console.error(err)
+      navigate('/login',{state:{from:location},replace:true})
+    }
+  }
   return (
     <AppContext.Provider value={{
       authState,
@@ -136,7 +147,8 @@ export const AppProvider = ({children}) => {
       getNews,
       likeNews,
       commentNews,
-      searchNews
+      searchNews,
+      likedNews
     }}>
       {children}
     </AppContext.Provider>

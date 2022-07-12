@@ -1,40 +1,30 @@
-import { useNavigate, Link, useLocation } from "react-router-dom"
-import {useState,useEffect} from 'react'
+import { Link, useLocation,Outlet } from "react-router-dom"
+import {useState} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import News from './News'
-import Card from 'react-bootstrap/Card'
-import CardGroup from 'react-bootstrap/CardGroup'
-import Button from 'react-bootstrap/Button'
-import Col from 'react-bootstrap/Col'
-import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
 const Home = () => {
     // const [news,setNews] = useState()
-    const {newsState,getNews,reset,searchNews} = useGlobalContext()
-    const {loading,error,success,news} = newsState
-    const navigate = useNavigate()
+    const {searchNews} = useGlobalContext()
+    const [tab,setTab] = useState('newsfeed')
     const axiosPrivate = useAxiosPrivate()
     const location = useLocation()
     const [search,setSearch] = useState({
                                         inputText:'',
                                         inputRadio:''
                                         })
-    // const [likes,setLikes] = useState(false)
-    useEffect(()=>{
-      getNews(axiosPrivate,location)
+    // useEffect(()=>{
+    //   getNews(axiosPrivate,location)
+    //   return () => {
+    //     reset('news')
+    //   }
+    // },[])
 
-      return () => {
-        reset('news')
-      }
-    },[])
-
-    const logout = async () => {
-        // if used in more components, this should be in context
-        // axios to /logout endpoint
-        // setAuth({})
-        navigate('/linkpage')
-    }
+    // const logout = async () => {
+    //     // if used in more components, this should be in context
+    //     // axios to /logout endpoint
+    //     // setAuth({})
+    //     navigate('/linkpage')
+    // }
 
 
     const handleInput = (e) => {
@@ -49,75 +39,49 @@ const Home = () => {
       searchNews(axiosPrivate,location,search)
     }
     return (
-      <>
-        <Card.Body>
-          <Card.Title as="h3">Home</Card.Title>
-        </Card.Body>
-        <Card.Body>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column sm={2}>
-                Search
-              </Form.Label>
-              <Col sm={10}>
-                <Form.Control
-                  type="text"
-                  onChange={handleInput}
-                  value={search.inputText}
-                  name="inputText"
-                  />
-              </Col>
-            </Form.Group>
-            <fieldset>
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label as="legend" column sm={2}>
-                  Filter
-                </Form.Label>
-                <Col sm={10}>
-                  <Form.Check
-                    type="radio"
-                    label="username"
-                    name="inputRadio"
-                    value="username"
-                    onChange={handleInput}
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="title"
-                    name="inputRadio"
-                    value="title"
-                    onChange={handleInput}
-                  />
-                </Col>
-              </Form.Group>
-            </fieldset>
-            <Form.Group as={Row} className="mb-3">
-              <Col sm={{ span: 10, offset: 2 }}>
-                <Button type="submit">Search</Button>
-              </Col>
-            </Form.Group>
-          </Form>
-        </Card.Body>
-        {loading ? (
-          <div className="card-body">
-            <div className="d-flex justify-content-center">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
+      <div className="card-body">
+        <h5 className="card-title">Home</h5>
+        <form onSubmit={handleSubmit}>
+          <div className="row mb-3">
+            <label htmlFor="inputText" className="col-sm-2 col-form-label">Search</label>
+            <div className="col-sm-10">
+              <input type="text" className="form-control" id="inputText" onChange={handleInput}
+              value={search.inputText}/>
             </div>
           </div>
-        ): news?.length ?  (<div className="container">
-            {news.map((article) => {
-              return <News key={article._id} {...article}/>
-            })}
-          </div>):(<Card.Body>
-            <Card.Text>
-              No news to display
-            </Card.Text>
-          </Card.Body>
-          )}
-        <Button variant="primary" onClick={logout} >Sign Out</Button>
-      </>
+          <fieldset className="row mb-3">
+            <legend className="col-form-label col-sm-2 pt-0">Filter</legend>
+            <div className="col-sm-10">
+              <div className="form-check">
+                <input className="form-check-input" type="radio" name="inputRadio" id="username" onChange={handleInput}/>
+                <label className="form-check-label" htmlFor="username">
+                  Username
+                </label>
+              </div>
+              <div className="form-check">
+                <input className="form-check-input" type="radio" name="inputRadio" id="title" onChange={handleInput}/>
+                <label className="form-check-label" htmlFor="title">
+                  Title
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <button type="submit" className="btn btn-primary">Search</button>
+        </form>
+        <ul className="nav nav-tabs mt-2">
+          <li className="nav-item">
+            <Link to='/newsfeed' className={`nav-link ${tab === 'newsfeed' ? 'active':''}`} onClick={()=>setTab('newsfeed')}>
+              News Feed
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to='/favorites' className={`nav-link ${tab === 'favorites' ? 'active':''}`} onClick={()=>setTab('favorites')}>
+              Favorites
+            </Link>
+          </li>
+        </ul>
+        <Outlet/>
+      </div>
     )
 }
 

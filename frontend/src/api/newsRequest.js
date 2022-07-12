@@ -18,11 +18,17 @@ const searchNews = async (axiosPrivate,data) => {
   return response.data
 }
 
+const likedNews = async (axiosPrivate,id) => {
+  const response = await axiosPrivate.get(`/users/${id}/likes`)
+  return response.data
+}
+
 const newsRequest = {
   getNews,
   likeNews,
   commentNews,
-  searchNews
+  searchNews,
+  likedNews
 }
 
 export default newsRequest
