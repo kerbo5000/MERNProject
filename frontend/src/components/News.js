@@ -1,37 +1,29 @@
 import { useState,useEffect } from 'react'
 import Comments from './Comments'
-import {useLocation } from "react-router-dom"
+import {useLocation,Link } from "react-router-dom"
 import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-const News = ({_id,username,title,body,comments,likes}) => {
-  const {authState,likeNews} = useGlobalContext()
+import React from 'react'
+const News = React.forwardRef(({_id,username,title,body,comments,likes,liked},ref) => {
+  const {likeNews} = useGlobalContext()
   const [open, setOpen] = useState(false);
-  const {user} = authState
-  const [liked,setLiked] = useState(likes.includes(user))
+  // const [liked,setLiked] = useState(likes.includes(user))
   const axiosPrivate = useAxiosPrivate()
   const location = useLocation()
-
   const likeBtn = () => {
-    setLiked((prev) => {
-      console.log(`${title} from ${prev} to ${!prev}`)
-      return !prev
-    })
-  }
-  useEffect(()=>{
     if(liked){
-      likeNews(axiosPrivate,_id,'like',location)
-    }else{
       likeNews(axiosPrivate,_id,'unlike',location)
+    }else{
+      likeNews(axiosPrivate,_id,'like',location)
     }
-  },[liked])
-
-  return (
-    <div className="clearfix mt-2">
+  }
+  const newsBody = (
+    <>
       <div className="card">
         <h5 className="card-header">{title}</h5>
         <div className="card-body">
           <blockquote className="blockquote mb-0">
-            <p className="fs-6">{body}</p>
+            <p className="fs-6">{`${body.substring(0,200)}...`}</p>
             <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{username}</cite></footer>
           </blockquote>
           <div className="btn-group mt-2" role="group" aria-label="Basic example">
@@ -49,9 +41,24 @@ const News = ({_id,username,title,body,comments,likes}) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
-}
+  const content = ref
+    ? <div className="clearfix mt-2" ref={ref}>{newsBody}</div>
+    : <div className="clearfix mt-2">{newsBody}</div>
+
+
+  // useEffect(()=>{
+  //   if(liked){
+  //     likeNews(axiosPrivate,_id,'like',location)
+  //   }else{
+  //     likeNews(axiosPrivate,_id,'unlike',location)
+  //   }
+  // },[liked])
+
+  return content
+
+})
 
 
 export default News;

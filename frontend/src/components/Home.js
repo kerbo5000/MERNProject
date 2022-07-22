@@ -1,23 +1,19 @@
 import { Link, useLocation,Outlet } from "react-router-dom"
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import useNews from '../hooks/useNews'
+import NewsContainer from './NewsContainer'
 const Home = () => {
-    // const [news,setNews] = useState()
-    const {searchNews} = useGlobalContext()
+    const {test} = useGlobalContext()
     const [tab,setTab] = useState('newsfeed')
+    const [numPage,setNumPage] = useState(0)
     const axiosPrivate = useAxiosPrivate()
     const location = useLocation()
     const [search,setSearch] = useState({
                                         inputText:'',
                                         inputRadio:''
                                         })
-    // useEffect(()=>{
-    //   getNews(axiosPrivate,location)
-    //   return () => {
-    //     reset('news')
-    //   }
-    // },[])
 
     // const logout = async () => {
     //     // if used in more components, this should be in context
@@ -25,7 +21,21 @@ const Home = () => {
     //     // setAuth({})
     //     navigate('/linkpage')
     // }
+    useEffect(()=>{
+      setNumPage(0)
+      setSearch({
+                  inputText:'',
+                  inputRadio:''
+                })
+    },[tab])
 
+    useEffect(()=>{
+      if(tab === 'favorites'){
+        test(axiosPrivate,numPage,search,true)
+      }else{
+        test(axiosPrivate,numPage,search,false)
+      }
+    },[numPage,tab])
 
     const handleInput = (e) => {
       setSearch(prevSearch => {
@@ -36,8 +46,9 @@ const Home = () => {
     }
     const handleSubmit = (e) =>{
       e.preventDefault()
-      searchNews(axiosPrivate,location,search)
+      setNumPage(0)
     }
+
     return (
       <div className="card-body">
         <h5 className="card-title">Home</h5>
@@ -45,7 +56,7 @@ const Home = () => {
           <div className="row mb-3">
             <label htmlFor="inputText" className="col-sm-2 col-form-label">Search</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" id="inputText" onChange={handleInput}
+              <input type="text" className="form-control" id="inputText" name="inputText" onChange={handleInput}
               value={search.inputText}/>
             </div>
           </div>
@@ -53,13 +64,13 @@ const Home = () => {
             <legend className="col-form-label col-sm-2 pt-0">Filter</legend>
             <div className="col-sm-10">
               <div className="form-check">
-                <input className="form-check-input" type="radio" name="inputRadio" id="username" onChange={handleInput}/>
+                <input className="form-check-input" type="radio" name="inputRadio" id="username"  value="username" onChange={handleInput}/>
                 <label className="form-check-label" htmlFor="username">
                   Username
                 </label>
               </div>
               <div className="form-check">
-                <input className="form-check-input" type="radio" name="inputRadio" id="title" onChange={handleInput}/>
+                <input className="form-check-input" type="radio" name="inputRadio" id="title" value="title" onChange={handleInput}/>
                 <label className="form-check-label" htmlFor="title">
                   Title
                 </label>
@@ -70,17 +81,15 @@ const Home = () => {
         </form>
         <ul className="nav nav-tabs mt-2">
           <li className="nav-item">
-            <Link to='/newsfeed' className={`nav-link ${tab === 'newsfeed' ? 'active':''}`} onClick={()=>setTab('newsfeed')}>
-              News Feed
-            </Link>
+            <a className={`nav-link ${tab === 'newsfeed' ? 'active':''}`} aria-current="page" onClick={()=>setTab('newsfeed')} >News Feed
+            </a>
           </li>
           <li className="nav-item">
-            <Link to='/favorites' className={`nav-link ${tab === 'favorites' ? 'active':''}`} onClick={()=>setTab('favorites')}>
-              Favorites
-            </Link>
+            <a className={`nav-link ${tab === 'favorites' ? 'active':''}`} onClick={()=>setTab('favorites')} >Favorites
+            </a>
           </li>
         </ul>
-        <Outlet/>
+        <NewsContainer setNumPage={setNumPage}/>
       </div>
     )
 }

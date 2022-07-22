@@ -1,5 +1,6 @@
-const getNews = async (axiosPrivate) => {
-  const response = await axiosPrivate.get('/news')
+const getNews = async (axiosPrivate,numPage,search,liked) => {
+  const {inputRadio:filter,inputText:input} = search
+  const response = await axiosPrivate.get(`/news?skip=${numPage*5}&limit=5&${filter}=${input}&likes=${liked}`)
   return response.data
 }
 

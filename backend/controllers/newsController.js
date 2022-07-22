@@ -2,20 +2,29 @@ const News = require('../model/News')
 const User = require('../model/User')
 const ROLES_LIST = require('../config/roles_list')
 const getNews = async (req,res) => {
-  let news = await News.find()
+  let filter = {}
   if(req?.query?.title){
-    const title = req.query.title
-    console.log(title)
-    news = news.filter((newIndex) => newIndex.title === title )
+    filter.title = req.query.title
   }
   if(req?.query?.username){
-    const username = req.query.username
-    news = news.filter((newIndex) => newIndex.username === username )
+    filter.username = req.query.username
   }
-  if(!news.length){
-    return res.status(204).json({'message':'No news'})
+  if(req?.query?.likes){
+    filter.likes = req.query.likes
   }
-  res.status(200).json(news)
+  if(req?.query?.skip && req?.query?.limit ){
+    const news = await News.find(filter).skip(Number(req.query.skip)).limit(Number(req.query.limit))
+    return res.status(200).json(news)
+  } else if (req?.query?.limit) {
+    const news = await News.find(filter).limit(Number(req.query.limit))
+    return res.status(200).json(news)
+  } else if (req?.query?.skip) {
+    const news = await News.find(filter).skip(Number(req.query.skip))
+    return res.status(200).json(news)
+  } else{
+    const news = await News.find(filter)
+    return res.status(200).json(news)
+  }
 }
 
 const createNews = async (req,res) => {

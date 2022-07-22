@@ -51,14 +51,12 @@ const NewsTable = () => {
                     }
                   </div>
                 </td>
+                <td>hi</td>
               </tr>
             )
           })}
           </tbody>
           </table>
-          {news.map((article) => {
-            return <News key={article._id} {...article}/>
-          })}
         </div>
       ):(
         <div className="card-body">
