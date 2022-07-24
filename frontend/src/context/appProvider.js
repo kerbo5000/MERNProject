@@ -85,17 +85,6 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const getNews = async (axiosPrivate,location) => {
-    try{
-      newsDispatch({type:'LOADING'})
-      const response = await newsRequest.getNews(axiosPrivate)
-      newsDispatch({type:'SET_NEWS',payload:{response,user:authState.user}})
-    }catch(err){
-      console.error(err)
-      navigate('/login',{state:{from:location},replace:true})
-    }
-  }
-
   const likeNews = async (axiosPrivate,id,type,location) => {
     try{
       const response = await newsRequest.likeNews(axiosPrivate,id,type)
@@ -116,17 +105,18 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const filterNews = async (axiosPrivate,location,search) => {
+  const getNewsById = async (axiosPrivate,location,id) => {
     try{
       newsDispatch({type:'LOADING'})
-      newsDispatch({type:'FILTER',payload:search})
+      const response = await newsRequest.getNewsById(axiosPrivate,id)
+      newsDispatch({type:'NEWS_ID',payload:{response,user:authState.user}})
     }catch(err){
       console.error(err)
       navigate('/login',{state:{from:location},replace:true})
     }
   }
 
-  const test = async (axiosPrivate,pageNum,search,favorites) =>{
+  const test = async (axiosPrivate,pageNum,search,favorites,location) =>{
     if(pageNum === 0){
       reset('news')
     }
@@ -134,10 +124,26 @@ export const AppProvider = ({children}) => {
     try{
       const data = await newsRequest.getNews(axiosPrivate,pageNum,search,favorites ? authState.user: '')
       newsDispatch({type:'SCROLL_NEWS',payload:{response:data,user:authState.user}})
+    }catch (err){
+      console.error(err)
+      navigate('/login',{state:{from:location},replace:true})
+    }
+  }
+  const employeeNews = async (axiosPrivate,pageNum,search,username) =>{
+    if(pageNum === 0){
+      reset('news')
+    }
+    newsDispatch({type:'LOADING'})
+    try{
+      const data = await newsRequest.getNewsByEmployee(axiosPrivate,pageNum,search,username)
+      newsDispatch({type:'SCROLL_NEWS',payload:{response:data,user:authState.user}})
     }catch (e){
       newsDispatch({type:'ERROR',payload:e.message})
     }
   }
+  // useEffect(()=>{
+  //   console.log(newsState.news)
+  // },[newsState])
   return (
     <AppContext.Provider value={{
       authState,
@@ -146,11 +152,11 @@ export const AppProvider = ({children}) => {
       login,
       refreshAccessToken,
       reset,
-      getNews,
       likeNews,
       commentNews,
-      filterNews,
-      test
+      test,
+      getNewsById,
+      employeeNews
     }}>
       {children}
     </AppContext.Provider>

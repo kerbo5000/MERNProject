@@ -3,28 +3,37 @@ import {useState,useEffect} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 const NewsTable = () => {
-  const {newsState,getNews,reset} = useGlobalContext()
+  const {newsState,reset} = useGlobalContext()
   const {loading,news} = newsState
+  const [numPage,setNumPage] = useState(0)
   const axiosPrivate = useAxiosPrivate()
   const location = useLocation()
-  useEffect(()=>{
-    getNews(axiosPrivate,location)
-    return () => {
-      reset('news')
-    }
-  },[])
-
+  // useEffect(()=>{
+  //   test(axiosPrivate,numPage,search,false)
+  // },[numPage])
+  // const search =
   return (
-    <>
-      {news.length ? (
         <div className="container">
-        <table class="table">
+          <form className="row g-2 mt-2">
+            <div className="mb-3">
+              <label  className="form-label">Title</label>
+              <input type="text" className="form-control"/>
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Body</label>
+              <textarea className="form-control" rows="3"></textarea>
+            </div>
+            <div className="col-12">
+              <button type="submit" className="btn btn-primary">Add News</button>
+            </div>
+          </form>
+        {news.length ? (
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">id</th>
               <th scope="col">Username</th>
               <th scope="col">Title</th>
-              <th scope="col">Body</th>
               <th scope="col">Likes</th>
               <th scope="col">Actions</th>
             </tr>
@@ -36,16 +45,15 @@ const NewsTable = () => {
                 <th scope="row">{article._id}</th>
                 <td>{article.username}</td>
                 <td>{article.title}</td>
-                <td>{article.body}</td>
                 <td>
-                  <div class="dropdown">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <div className="dropdown">
+                    <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                       <span className="badge text-bg-dark">{article.likes.length}</span>
                     </button>
                     {article.likes.length &&
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         {article.likes.map((username,i)=>{
-                          return <li><a class="dropdown-item">{username}</a></li>
+                          return <li><a className="dropdown-item">{username}</a></li>
                         })}
                       </ul>
                     }
@@ -57,13 +65,12 @@ const NewsTable = () => {
           })}
           </tbody>
           </table>
-        </div>
       ):(
         <div className="card-body">
           <p className="card-text">No news to display</p>
         </div>
       )}
-    </>
+      </div>
   );
 }
 

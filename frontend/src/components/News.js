@@ -20,11 +20,17 @@ const News = React.forwardRef(({_id,username,title,body,comments,likes,liked},re
   const newsBody = (
     <>
       <div className="card">
-        <h5 className="card-header">{title}</h5>
+        <Link to={`/news/${_id}`} style={{textDecoration:'none',color:'black'}}>
+          <h5 className="card-header">{title}</h5>
+        </Link>
         <div className="card-body">
           <blockquote className="blockquote mb-0">
-            <p className="fs-6">{`${body.substring(0,200)}...`}</p>
-            <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{username}</cite></footer>
+            <Link to={`/news/${_id}`} style={{textDecoration:'none',color:'black'}}>
+              <p className="fs-6">{`${body.substring(0,200)}...`}</p>
+            </Link>
+            <Link to={`/employee/${username}`} style={{textDecoration:'none',color:'black'}}>
+              <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{username}</cite></footer>
+            </Link>
           </blockquote>
           <div className="btn-group mt-2" role="group" aria-label="Basic example">
             <button type="button" className={`shadow-none btn ${liked ?'btn-danger':'btn-secondary'}`} onClick={likeBtn}>

@@ -3,7 +3,16 @@ const getNews = async (axiosPrivate,numPage,search,liked) => {
   const response = await axiosPrivate.get(`/news?skip=${numPage*5}&limit=5&${filter}=${input}&likes=${liked}`)
   return response.data
 }
-
+const getNewsByEmployee = async (axiosPrivate,numPage,search,username) => {
+  const {inputRadio:filter,inputText:input} = search
+  const response = await axiosPrivate.get(`/news?skip=${numPage*5}&limit=5&${filter}=${input}&username=${username}`)
+  console.log(response.data)
+  return response.data
+}
+const getNewsById = async (axiosPrivate,id) => {
+  const response = await axiosPrivate.get(`/news/${id}`)
+  return response.data
+}
 const likeNews = async (axiosPrivate,id,type) => {
   const response = await axiosPrivate.put(`/news/${id}/likes/${type}`)
   return response.data
@@ -14,22 +23,13 @@ const commentNews = async (axiosPrivate,id,body) => {
   return response.data
 }
 
-const searchNews = async (axiosPrivate,data) => {
-  const response = await axiosPrivate.get(`/news?${data.inputRadio}=${data.inputText}`)
-  return response.data
-}
-
-const likedNews = async (axiosPrivate,id) => {
-  const response = await axiosPrivate.get(`/users/${id}/likes`)
-  return response.data
-}
 
 const newsRequest = {
   getNews,
   likeNews,
   commentNews,
-  searchNews,
-  likedNews
+  getNewsById,
+  getNewsByEmployee
 }
 
 export default newsRequest

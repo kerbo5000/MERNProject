@@ -35,17 +35,6 @@ const NewsContainer = ({setNumPage}) => {
     return <News key={article._id} {...article}/>
   })
 
-  // useEffect(()=>{
-  //   test(axiosPrivate,numPage)
-  // },[numPage])
-
-  // if(loading){
-  //   return (
-  //     <div className="card-body">
-  //
-  //     </div>
-  //     )
-  // }
   return (
     <>
       {loading &&

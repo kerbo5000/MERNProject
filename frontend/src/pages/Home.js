@@ -3,7 +3,7 @@ import {useState,useEffect} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useNews from '../hooks/useNews'
-import NewsContainer from './NewsContainer'
+import NewsContainer from '../components/NewsContainer'
 const Home = () => {
     const {test} = useGlobalContext()
     const [tab,setTab] = useState('newsfeed')
@@ -31,9 +31,9 @@ const Home = () => {
 
     useEffect(()=>{
       if(tab === 'favorites'){
-        test(axiosPrivate,numPage,search,true)
+        test(axiosPrivate,numPage,search,true,location)
       }else{
-        test(axiosPrivate,numPage,search,false)
+        test(axiosPrivate,numPage,search,false,location)
       }
     },[numPage,tab])
 

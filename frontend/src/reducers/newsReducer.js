@@ -39,24 +39,10 @@ const newsReducer = (state,action) => {
             error:'',
             success:true}
   }
-  if(action.type === 'FILTER'){
-    let tempNews
-    const {inputRadio:filter,inputText:input} = action.payload
-    switch(filter){
-      case 'likes':
-        tempNews = state.news
-          .filter((article) => article.liked===true)
-        break
-      case 'username':
-        tempNews = state.news
-          .filter((article)=> article.username === input)
-        break
-      case 'title':
-        tempNews = state.news
-          .filter((article)=> article.title === input)
-        break
-    }
-    return {news:tempNews,
+  if(action.type === 'NEWS_ID'){
+    const {response,user} = action.payload
+    const tempNews = {...response,liked:response.likes.includes(user)}
+    return {news:Array.of(tempNews),
             loading:false,
             error:'',
             success:true}

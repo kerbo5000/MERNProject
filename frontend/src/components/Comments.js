@@ -4,7 +4,8 @@ import useGlobalContext from '../hooks/useGlobalContext'
 
 import { useState } from 'react'
 const Comments = ({comments,id}) => {
-  const {commentNews} = useGlobalContext()
+  const {commentNews,authState} = useGlobalContext()
+  const {roles} = authState
   const [newComment,setNewComment] = useState('')
   const axiosPrivate = useAxiosPrivate()
   const location = useLocation()
@@ -16,15 +17,16 @@ const Comments = ({comments,id}) => {
   }
   return (
     <>
-      <form className="row gy-2 gx-3 align-items-center" onSubmit={handleSubmit}>
-        <div className="col-10">
-          <input type="text" className="form-control" id="autoSizingInput" placeholder="Leave a comment" value={newComment}
-            onChange={(e)=>setNewComment(e.target.value)} autoComplete='off'/>
-        </div>
-        <div className="col-auto">
-          <button type="submit" className="btn btn-primary" disabled={newComment?false:true}>Comment</button>
-        </div>
-      </form>
+      {roles.includes(2001) &&
+        <form className="row gy-2 gx-3 align-items-center" onSubmit={handleSubmit}>
+          <div className="col-10">
+            <input type="text" className="form-control" id="autoSizingInput" placeholder="Leave a comment" value={newComment}
+              onChange={(e)=>setNewComment(e.target.value)} autoComplete='off'/>
+          </div>
+          <div className="col-auto">
+            <button type="submit" className="btn btn-primary" disabled={newComment?false:true}>Comment</button>
+          </div>
+        </form>}
       {comments?.length ?
         (<ul className="list-group ">
           {comments.map((comment) => {
