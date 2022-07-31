@@ -1,7 +1,6 @@
 import {useLocation } from "react-router-dom"
 import {useEffect,useState,useRef,useCallback} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useNews from '../hooks/useNews'
 import News from './News'
 
@@ -27,32 +26,36 @@ const NewsContainer = ({setNumPage}) => {
     })
     if(article) intObserver.current.observe(article)
   },[loading,nextPage])
-
-  const content = news.map((article,i) => {
-    if(news.length === i + 1){
-      return <News key={article._id} ref={lastNewsRef} {...article}/>
-    }
-    return <News key={article._id} {...article}/>
-  })
-
+  const content = (
+              <div className="container">
+                {news.map((article,i) => {
+                  if(news.length === i + 1){
+                    return <News key={article._id} ref={lastNewsRef} {...article}/>
+                  }
+                  return <News key={article._id} {...article}/>
+                })}
+            </div>
+            )
   return (
-    <>
+    <div className="card-body">
       {loading &&
-        <div className="d-flex justify-content-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
-        </div> }
-      {news?.length ? (
-        <div className="container overflow-auto">
-          {content}
-        </div>
-      ):(
-        <div className="card-body">
-          <p className="card-text">No news to display</p>
-        </div>
-      )}
-    </>
+        }
+        {!loading &&
+          <>
+            {news.length ?
+              content :
+              (
+                <p className="card-text">No news to display</p>
+              )
+            }
+          </>
+        }
+    </div>
   )
 }
 

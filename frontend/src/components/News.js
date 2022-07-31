@@ -2,19 +2,19 @@ import { useState,useEffect } from 'react'
 import Comments from './Comments'
 import {useLocation,Link } from "react-router-dom"
 import useGlobalContext from '../hooks/useGlobalContext'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+// import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import React from 'react'
 const News = React.forwardRef(({_id,username,title,body,comments,likes,liked},ref) => {
   const {likeNews} = useGlobalContext()
   const [open, setOpen] = useState(false);
   // const [liked,setLiked] = useState(likes.includes(user))
-  const axiosPrivate = useAxiosPrivate()
+  // const axiosPrivate = useAxiosPrivate()
   const location = useLocation()
   const likeBtn = () => {
     if(liked){
-      likeNews(axiosPrivate,_id,'unlike',location)
+      likeNews(_id,'unlike',location)
     }else{
-      likeNews(axiosPrivate,_id,'like',location)
+      likeNews(_id,'like',location)
     }
   }
   const newsBody = (

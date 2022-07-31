@@ -1,4 +1,4 @@
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+// import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { useLocation } from "react-router-dom"
 import useGlobalContext from '../hooks/useGlobalContext'
 
@@ -7,12 +7,12 @@ const Comments = ({comments,id}) => {
   const {commentNews,authState} = useGlobalContext()
   const {roles} = authState
   const [newComment,setNewComment] = useState('')
-  const axiosPrivate = useAxiosPrivate()
+  // const axiosPrivate = useAxiosPrivate()
   const location = useLocation()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    commentNews(axiosPrivate,id,newComment,location)
+    commentNews(id,newComment,location)
     setNewComment('')
   }
   return (

@@ -1,12 +1,12 @@
 import { useState,useEffect } from 'react'
 import {useLocation,useParams,useNavigate} from "react-router-dom"
 import useGlobalContext from '../hooks/useGlobalContext'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+// import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import NewsGrid from '../components/NewsGrid'
 
 const EmployeePage = () => {
   const {username} = useParams()
-  const axiosPrivate = useAxiosPrivate()
+  // const axiosPrivate = useAxiosPrivate()
   const {employeeNews,newsState,likeNews} = useGlobalContext()
   const [numPage,setNumPage] = useState(0)
   const [search,setSearch] = useState({
@@ -22,7 +22,7 @@ const EmployeePage = () => {
   }
 
   useEffect(()=>{
-    employeeNews(axiosPrivate,numPage,search,username)
+    employeeNews(numPage,search,username)
   },[numPage])
 
   const handleSubmit = (e) =>{

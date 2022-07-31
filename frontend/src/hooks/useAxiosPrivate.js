@@ -6,7 +6,8 @@ import useGlobalContext from "./useGlobalContext";
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken()
     const {authState} = useGlobalContext()
-
+    console.count('axiosPrivate')
+    console.trace()
     useEffect(() => {
 
         const requestIntercept = axiosPrivate.interceptors.request.use(
@@ -14,6 +15,8 @@ const useAxiosPrivate = () => {
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = `Bearer ${authState?.accessToken}`;
                 }
+                console.log('h1')
+                console.log(config._retry)
                 return config;
             }, (error) => Promise.reject(error)
         );
@@ -22,9 +25,15 @@ const useAxiosPrivate = () => {
             (response) => {
               return response},
             async (error) => {
-                const prevRequest = error?.config;
-                if (error?.response?.status === 403 && !prevRequest?.sent) {
-                    prevRequest.sent = true;
+                console.log('h2')
+                const prevRequest = error.config;
+                console.log(prevRequest)
+                console.log(prevRequest._retry)
+                if (error?.response?.status === 403 && !prevRequest._retry) {
+                    console.log('h3')
+                    console.log(prevRequest._retry)
+                    prevRequest._retry = true;
+                    console.log(prevRequest._retry)
                     const newAccessToken = await refresh();
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axiosPrivate(prevRequest);

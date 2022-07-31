@@ -6,6 +6,8 @@ import newsReducer from '../reducers/newsReducer'
 import authRequest from '../api/authRequest'
 import newsRequest from '../api/newsRequest'
 // import userRequest from '../api/userRequest'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+
 const AppContext = createContext()
 const authInitialState = {
   loading: false,
@@ -29,6 +31,7 @@ const newsInitialState = {
 //   success:false,
 // }
 export const AppProvider = ({children}) => {
+  const axiosPrivate = useAxiosPrivate()
   const navigate = useNavigate()
   const [authState,authDispatch] = useReducer(authReducer,authInitialState)
   const [newsState,newsDispatch] = useReducer(newsReducer,newsInitialState)
@@ -85,7 +88,7 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const likeNews = async (axiosPrivate,id,type,location) => {
+  const likeNews = async (id,type,location) => {
     try{
       const response = await newsRequest.likeNews(axiosPrivate,id,type)
       newsDispatch({type:'UPDATE_ARTICLE',payload:{response,user:authState.user}})
@@ -95,7 +98,7 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const commentNews = async (axiosPrivate,id,body,location) => {
+  const commentNews = async (id,body,location) => {
     try{
       const response = await newsRequest.commentNews(axiosPrivate,id,body)
       newsDispatch({type:'UPDATE_ARTICLE',payload:{response,user:authState.user}})
@@ -105,7 +108,7 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const getNewsById = async (axiosPrivate,location,id) => {
+  const getNewsById = async (location,id) => {
     try{
       newsDispatch({type:'LOADING'})
       const response = await newsRequest.getNewsById(axiosPrivate,id)
@@ -116,7 +119,7 @@ export const AppProvider = ({children}) => {
     }
   }
 
-  const test = async (axiosPrivate,pageNum,search,favorites,location) =>{
+  const test = async (pageNum,search,favorites,location) =>{
     if(pageNum === 0){
       reset('news')
     }
@@ -125,11 +128,12 @@ export const AppProvider = ({children}) => {
       const data = await newsRequest.getNews(axiosPrivate,pageNum,search,favorites ? authState.user: '')
       newsDispatch({type:'SCROLL_NEWS',payload:{response:data,user:authState.user}})
     }catch (err){
+      console.log('hii')
       console.error(err)
       navigate('/login',{state:{from:location},replace:true})
     }
   }
-  const employeeNews = async (axiosPrivate,pageNum,search,username) =>{
+  const employeeNews = async (pageNum,search,username) =>{
     if(pageNum === 0){
       reset('news')
     }
@@ -139,6 +143,17 @@ export const AppProvider = ({children}) => {
       newsDispatch({type:'SCROLL_NEWS',payload:{response:data,user:authState.user}})
     }catch (e){
       newsDispatch({type:'ERROR',payload:e.message})
+    }
+  }
+
+  const addNews = async (location,title,body) => {
+    try{
+      newsDispatch({type:'LOADING'})
+      const response = await newsRequest.addNews(axiosPrivate,title,body)
+      newsDispatch({type:'NEWS_ADDED'})
+    }catch(err){
+      console.error(err)
+      navigate('/login',{state:{from:location},replace:true})
     }
   }
   // useEffect(()=>{
@@ -156,7 +171,8 @@ export const AppProvider = ({children}) => {
       commentNews,
       test,
       getNewsById,
-      employeeNews
+      employeeNews,
+      addNews
     }}>
       {children}
     </AppContext.Provider>

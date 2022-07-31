@@ -9,7 +9,11 @@ const newsReducer = (state,action) => {
             loading:true,
             error:''}
   }
-
+  if(action.type === 'NEWS_ADDED'){
+    return {...state,
+            loading:false,
+            success:true}
+  }
   if(action.type === 'RESET'){
     return action.payload
   }

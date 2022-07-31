@@ -12,7 +12,7 @@ import SingleNews from './pages/SingleNews'
 import EmployeePage from './pages/EmployeePage'
 import Unauthorized from './pages/Unauthorized'
 import { Routes, Route } from 'react-router-dom'
-import RequiredAuth from './components/RequiredAuth'
+import RequiredAuth from './features/auth8/RequiredAuth'
 import './App.css'
 
 function App() {

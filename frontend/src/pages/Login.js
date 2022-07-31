@@ -4,23 +4,31 @@ import Card from 'react-bootstrap/Card'
 import Nav from 'react-bootstrap/Nav'
 import {useRef,useState,useEffect} from 'react'
 import {useNavigate,useLocation} from 'react-router-dom'
-import useGlobalContext from '../hooks/useGlobalContext'
+// import useGlobalContext from '../hooks/useGlobalContext'
+import {useDispatch} from 'react-redux'
+import {setCredentials} from './authSlice'
+import {useLoginMutation} from './authApiSlice'
 
 const Login = () => {
-    const {authState,login,reset} = useGlobalContext()
-    const {loading,error,success} = authState
+    // const {authState,login,reset} = useGlobalContext()
+    // const {loading,error,success} = authState
 
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from?.pathname || '/'
     const userRef = useRef()
+    const errRef = useRef()
     const [endpoint,setEndpoint] = useState('user')
     const [user,setUser] = useState('')
     const [pwd,setPwd] = useState('')
+    const [err,setErr] = useState('')
+
+    const [login,{isLoading}] = useLoginMutation()
+    const dispatch =useDispatch()
 
     useEffect(() => {
       userRef.current?.focus()
-      reset('auth')
+      // reset('auth')
     },[])
 
     const changeTab = (url) => {
@@ -29,19 +37,37 @@ const Login = () => {
       setEndpoint(url)
     }
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
       e.preventDefault()
-      login(user,pwd,endpoint)
-    }
-    useEffect(()=>{
-      if(success){
+      try{
+        const userDate = await login({user,pwd}).unwrap()
+        dispatch(setCredentials({...userData,user}))
         setUser('')
         setPwd('')
         navigate(from,{replace:true})
+      }catch (err){
+        if(!err?.originalStatus){
+          setErr('No Server Response')
+        } else if(err.originalStatus === 400){
+          setErr('Missing Username or Password')
+        } else if(err.originalStatus === 401){
+          setErr('Unauthorized')
+        } else {
+          setErr('Login Failed')
+        }
+        errRef.current.focus()
       }
-    },[success])
+      // login(user,pwd,endpoint)
+    }
+    // useEffect(()=>{
+    //   if(success){
+    //     setUser('')
+    //     setPwd('')
+    //     navigate(from,{replace:true})
+    //   }
+    // },[success])
 
-    if(loading){
+    if(isLoading){
       return (
         <div className="card-body">
           <div className="d-flex justify-content-center">
@@ -66,7 +92,7 @@ const Login = () => {
         </Card.Body>
         <Card.Body>
           {error &&
-            <div className="alert alert-danger" role="alert">
+            <div className="alert alert-danger" role="alert" ref={errRef}>
               {error}
             </div>
           }

@@ -1,14 +1,15 @@
 import { Link, useLocation,Outlet } from "react-router-dom"
 import {useState,useEffect} from 'react'
 import useGlobalContext from '../hooks/useGlobalContext'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+// import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useNews from '../hooks/useNews'
 import NewsContainer from '../components/NewsContainer'
 const Home = () => {
+    console.count('home')
     const {test} = useGlobalContext()
     const [tab,setTab] = useState('newsfeed')
     const [numPage,setNumPage] = useState(0)
-    const axiosPrivate = useAxiosPrivate()
+    // const axiosPrivate = useAxiosPrivate()
     const location = useLocation()
     const [search,setSearch] = useState({
                                         inputText:'',
@@ -30,10 +31,11 @@ const Home = () => {
     },[tab])
 
     useEffect(()=>{
+      console.log('hiiiiiiiiii')
       if(tab === 'favorites'){
-        test(axiosPrivate,numPage,search,true,location)
+        test(numPage,search,true,location)
       }else{
-        test(axiosPrivate,numPage,search,false,location)
+        test(numPage,search,false,location)
       }
     },[numPage,tab])
 

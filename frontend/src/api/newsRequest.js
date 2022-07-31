@@ -23,13 +23,19 @@ const commentNews = async (axiosPrivate,id,body) => {
   return response.data
 }
 
+const addNews = async (axiosPrivate,title,body) => {
+  const response = await axiosPrivate.post('/news',JSON.stringify({title,body}))
+  return response.data
+}
+
 
 const newsRequest = {
   getNews,
   likeNews,
   commentNews,
   getNewsById,
-  getNewsByEmployee
+  getNewsByEmployee,
+  addNews
 }
 
 export default newsRequest

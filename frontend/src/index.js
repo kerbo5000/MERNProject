@@ -3,16 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {AppProvider} from './context/appProvider'
+// import {AppProvider} from './context/appProvider'
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
-
+import {store} from './app/store'
+import {Provider} from 'react-redux'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter>
-      <AppProvider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
         <Routes>
           <Route path='/*' element={<App />}/>
         </Routes>
-      </AppProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
+
 );

@@ -3,7 +3,7 @@ import useGlobalContext from '../hooks/useGlobalContext'
 
 const useRefreshToken = () => {
     const {refreshAccessToken} = useGlobalContext()
-
+    console.count('refresh')
     const refresh = async () => {
         const response = await axios.get('/refresh', {
             withCredentials: true
