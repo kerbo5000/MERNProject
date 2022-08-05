@@ -4,8 +4,7 @@ const {
   getUsers,
   getUser,
   updateUserPwd,
-  deleteUser,
-  getUserLikes
+  deleteUser
 } = require('../../controllers/usersController.js')
 const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
@@ -16,10 +15,8 @@ router.route('/')
 
 router.route('/:userId')
   .get(verifyId('user'),getUser)
-  .put(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'),updateUserPwd)
+  .patch(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'),updateUserPwd)
   .delete(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),verifyId('user'),deleteUser)
 
-router.route('/:userId/likes')
-  .get(verifyId('user'),getUserLikes)
 
 module.exports = router

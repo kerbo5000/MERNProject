@@ -25,6 +25,10 @@ const employeeSchema = new Schema({
     },
     Admin:Number
   },
-  refreshToken:String
+  refreshToken:String,
+  news:[{
+    type:mongoose.Schema.Types.ObjectId,  
+    ref:'News'
+  }]
 })
 module.exports = mongoose.model('Employee',employeeSchema)

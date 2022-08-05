@@ -4,18 +4,31 @@ const ROLES_LIST = require('../config/roles_list')
 const bcrypt = require('bcrypt')
 
 const getUsers = async (req,res) => {
-  let users = await User.find()
+  let filter = {}
   if(req?.query?.username){
-    const username = req.query.username
-    users = users.filter((user) => user.username === username )
+    filter.username = req.query.username
   }
-  if(!users.length){
-    res.status(204).json({'message':'No user found'})
+
+  if(req?.query?.news){
+    filter.liked = req.query.news
   }
+
+  let limit = 0 
+  if(req?.query?.limit && !isNaN(req.query.limit)){
+    limit = parseInt(req.query.limit,10)
+  }
+
+  let skip = 0 
+
+  if(req?.query?.skip && !isNaN(req.query.skip)){
+    skip = parseInt(req.query.skip,10)
+  }
+  const users = await User.find(filter).limit(limit).skip(skip)
+
   if(req.roles.includes(ROLES_LIST.Admin)){
     res.status(200).json(users)
   }else{
-    users = users.map((user) => (
+    result = users.map((user) => (
       {
         username:user.username,
         roles:user.roles,
@@ -23,7 +36,7 @@ const getUsers = async (req,res) => {
         news:user.news
       }
     ))
-    res.status(200).json(users)
+    res.status(200).json(result)
   }
 }
 
@@ -48,10 +61,7 @@ const updateUserPwd = async (req,res) => {
     user.password = await bcrypt.hash(req.body.newPassword,10)
     const result = await user.save()
     res.status(200).json(result)
-  }else{
-    if(req.user !== user.username){
-      return res.sendStatus(405)
-    }
+  }else if(req.userId == user._id){
     if(!req?.body?.newPassword || !req?.body?.oldPassword){
       res.status(400).json({'message':'New and old password required'})
     }
@@ -63,13 +73,17 @@ const updateUserPwd = async (req,res) => {
                             lastname:result.lastname,
                             username:result.username,
                             id:result.id})
+    }else{
+      return res.sendStatus(405)
     }
+  }else{
+    return res.sendStatus(405)
   }
 }
 
 const deleteUser = async (req,res) => {
   const user = req.target
-  if(req.roles.includes(ROLES_LIST.Admin) || user.username === req.user){
+  if(req.roles.includes(ROLES_LIST.Admin) || user.username == req.user){
     const result = await User.deleteOne({_id:req.target._id})
     res.status(200).json(result)
   }else{
@@ -77,16 +91,9 @@ const deleteUser = async (req,res) => {
   }
 }
 
-const getUserLikes = async (req,res) => {
-  const user = req.target
-  const results = await News.find({likes:req.user})
-  res.status(200).json(results)
-}
-
 module.exports = {
   getUsers,
   getUser,
   updateUserPwd,
   deleteUser,
-  getUserLikes
 }

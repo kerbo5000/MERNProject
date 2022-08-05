@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Employee = require('./Employee')
 const Schema = mongoose.Schema
 const newsSchema = new Schema({
   title:{
@@ -9,16 +10,24 @@ const newsSchema = new Schema({
     type:String,
     required:true
   },
-  username:{
-    type: String,
-    required:true
+  employee:{
+    type: mongoose.Schema.Types.ObjectId,
+    required:true,
+    ref:'Employee'
   },
   likes:[{
-    type:String,
+    type:mongoose.Schema.Types.ObjectId,  
+    ref:'User'
   }],
   comments:[{
     body:String,
-    from: String
+    user:{
+    type:mongoose.Schema.Types.ObjectId,  
+    ref:'User'
+    }
   }],
+},
+{
+  timestamps: true,
 })
 module.exports = mongoose.model('News',newsSchema)

@@ -18,9 +18,10 @@ const userSchema = new Schema({
     type:String,
     required:true
   },
-  refreshToken:String
-  // news:[{
-  //   type: mongoose.Schema.Types.ObjectId
-  // }]
+  refreshToken:String,
+  liked:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'News'
+  }]
 })
 module.exports = mongoose.model('User',userSchema)
