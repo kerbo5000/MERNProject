@@ -107,11 +107,11 @@ const getComments = async (req,res) => {
 }
 
 const addComment = async (req,res) => {
-  if(!req?.body?.body ){
+  if(!req?.body?.comment ){
     return res.status(400).json({'message':'Comment body is required.'})
   }
   const news = req.target
-  const body = req.body.body
+  const body = req.body.comment
   news.comments.push({body,user:req.userId})
   const result = await news.save()
   return res.status(200).json(result)

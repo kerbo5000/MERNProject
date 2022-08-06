@@ -28,8 +28,10 @@ function App() {
           <Route path='/' element={<Home />}/>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
-          <Route path='news/:newsId' element={<SingleNews />}/>
-          <Route path='employee/:username' element={<EmployeePage />}/>
+          <Route path='news' element={<Editor />}>
+            <Route path=':newsId' element={<SingleNews />}/>
+            <Route path=':employeeId' element={<EmployeePage />}/>
+          </Route>
         </Route>
         <Route element={<RequiredAuth allowedRoles={[1984]}/>}>
           <Route path='editor' element={<Editor />}>

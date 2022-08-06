@@ -1,17 +1,17 @@
 import {useRef,useState,useEffect} from 'react'
-import useGlobalContext from '../hooks/useGlobalContext'
 import {Link} from 'react-router-dom'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Card from 'react-bootstrap/Card'
 import Alert from 'react-bootstrap/Alert'
+import {useRegisterMutation} from '../features/auth/authApiSlice'
 function Register() {
+
+  const [register,{isLoading,isSuccess,isError}] = useRegisterMutation()
+
   const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/
   const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/
 
-  const {authState,register,reset} = useGlobalContext()
-
-  const {loading,error,success} = authState
   const userRef = useRef()
 
   const [user,setUser] = useState('')
@@ -26,10 +26,15 @@ function Register() {
   const [validMatch,setValidMatch] = useState(false)
   const [matchFocus, setMatchFocus] = useState(false)
 
+  const [error,setError] = useState('')
+
   useEffect(() => {
     userRef.current?.focus()
-    reset('auth')
   },[])
+
+  useEffect(() => {
+    setError('')
+  },[user,pwd])
 
   useEffect(() => {
     const result = USER_REGEX.test(user)
@@ -45,17 +50,23 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    register(user,pwd)
-  }
-  useEffect(()=> {
-    if(success){
-      setUser('')
-      setPwd('')
-      setMatchPwd('')
+    try{
+      await register({user,pwd}).unwrap()
+    }catch(err){
+      if(!err?.originalStatus){
+        setError('No Server Response')
+      } else if(err.originalStatus === 400){
+        setError('Missing Username or Password')
+      } else if(err.originalStatus === 409){
+        setError('Username is taken')
+      } else {
+        setError('Registration Failed')
+      }
     }
-  },[success])
+  }
   
-  if(loading){
+
+  if(isLoading){
     return (
       <div className="card-body">
         <div className="d-flex justify-content-center">
@@ -66,7 +77,7 @@ function Register() {
       </div>
       )
   }
-  if(success){
+  if(isSuccess){
     return (
       <div className="card-body">
         <h5 className="card-title">Registration done</h5>

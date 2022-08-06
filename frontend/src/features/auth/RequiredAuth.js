@@ -1,16 +1,17 @@
 import {useLocation,Navigate,Outlet} from 'react-router-dom'
-// import useGlobalContext from '../hooks/useGlobalContext'
 import {useSelector} from 'react-redux'
-import {selectCurrentToken} from './authSlice'
+import {selectCurrentToken,selectCurrentRoles} from './authSlice'
 
-const RequiredAuth = () => {
-  // const {authState} = useGlobalContext()
+const RequiredAuth = ({allowedRoles}) => {
   const token = useSelector(selectCurrentToken)
+  const roles = useSelector(selectCurrentRoles)
   const location = useLocation()
   return(
-    token
+    roles?.find(role => allowedRoles?.includes(role))
       ? <Outlet/>
-      : <Navigate to='/login' state={{from: location}} replace />
+      : token 
+        ? <Navigate to='/unauthorized' state={{from: location}} replace />
+        : <Navigate to='/login' state={{from: location}} replace />
   )
 }
 export default RequiredAuth

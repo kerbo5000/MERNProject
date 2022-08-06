@@ -3,9 +3,10 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Card from 'react-bootstrap/Card'
 import { Link } from "react-router-dom"
-import useGlobalContext from '../hooks/useGlobalContext'
+import {useSelector} from 'react-redux'
+import {selectCurrentToken} from '../features/auth/authSlice'
 const Header = () => {
-  const {authState} = useGlobalContext()
+  const token = useSelector(selectCurrentToken)
   return (
     <Card.Header>
       <Navbar bg="light" expand="lg">
@@ -13,7 +14,7 @@ const Header = () => {
           <Navbar.Brand>Blog</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-             {authState?.user ? (
+             {token ? (
                <Nav className="ms-auto" defaultActiveKey={'home'}>
                   <Nav.Item>
                    <Nav.Link as={Link} to='/' eventKey='home'>Home</Nav.Link>
