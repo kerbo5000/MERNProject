@@ -2,18 +2,17 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Layout from './pages/Layout'
-import Editor from './pages/Editor'
-import Admin from './pages/Admin'
+// import Editor from './pages/Editor'
+// import Admin from './pages/Admin'
 import Missing from './pages/Missing'
-import UsersTable from './components/UsersTable'
-import NewsTable from './components/NewsTable'
-import EmployeesTable from './components/EmployeesTable'
-import SingleNews from './pages/SingleNews'
-import EmployeePage from './pages/EmployeePage'
+// import UsersTable from './components/UsersTable'
+// import NewsTable from './components/NewsTable'
+// import EmployeesTable from './components/EmployeesTable'
+// import SingleNews from './pages/SingleNews'
+// import EmployeePage from './pages/EmployeePage'
 import Unauthorized from './pages/Unauthorized'
 import { Routes, Route } from 'react-router-dom'
-import RequiredAuth from './features/auth8/RequiredAuth'
-import './App.css'
+import RequiredAuth from './features/auth/RequiredAuth'
 
 function App() {
   return (
@@ -27,8 +26,8 @@ function App() {
         <Route element={<RequiredAuth allowedRoles={[2001]}/>}>
           <Route path='/' element={<Home />}/>
         </Route>
-        <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
-          <Route path='news' element={<Editor />}>
+        {/* <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
+          <Route path='news'>
             <Route path=':newsId' element={<SingleNews />}/>
             <Route path=':employeeId' element={<EmployeePage />}/>
           </Route>
@@ -42,7 +41,7 @@ function App() {
         </Route>
         <Route element={<RequiredAuth allowedRoles={[5150]}/>}>
           <Route path='admin' element={<Admin />}/>
-        </Route>
+        </Route> */}
         /*catch all*/
         <Route path='*' element={<Missing />}/>
       </Route>

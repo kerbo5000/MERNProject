@@ -5,6 +5,7 @@ const SearchFrom = ({search,setNumPage,handleInput}) => {
     e.preventDefault()
     setNumPage(0)
   }
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="row mb-3">

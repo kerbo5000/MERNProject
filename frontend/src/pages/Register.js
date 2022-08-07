@@ -48,7 +48,7 @@ function Register() {
     setValidMatch(match)
   },[pwd,matchPwd])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try{
       await register({user,pwd}).unwrap()
@@ -150,7 +150,7 @@ function Register() {
                   </Alert>
                 }
               </Form.Group>
-              <Button variant={success ? "success":"primary"} type="submit" disabled={!validName||!validPwd||!validMatch ? true: false}>
+              <Button type="submit" disabled={!validName||!validPwd||!validMatch ? true: false}>
                 Submit
               </Button>
             </Form>

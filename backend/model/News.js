@@ -15,15 +15,26 @@ const newsSchema = new Schema({
     required:true,
     ref:'Employee'
   },
+  username:{
+    type:String,
+    required:true
+  },
   likes:[{
     type:mongoose.Schema.Types.ObjectId,  
     ref:'User'
   }],
   comments:[{
-    body:String,
-    user:{
+    body:{
+      type:String,
+      required:true
+    },
+    userId:{
     type:mongoose.Schema.Types.ObjectId,  
     ref:'User'
+    },
+    usernname:{
+      type:String,
+      required:true
     }
   }],
 },

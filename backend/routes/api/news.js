@@ -11,7 +11,8 @@ const {
   deleteComment,
   getCommentByIndex,
   updateNews,
-  deleteNews
+  deleteNews,
+  getNewsSearch
 } = require('../../controllers/newsController.js')
 const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
@@ -19,6 +20,9 @@ const verifyId = require('../../middleware/verifyId')
 
 router.route('/')
   .get(getNews)
+
+router.route('/search')
+  .get(getNewsSearch)
 
 router.route('/')
   .post(verifyRoles(ROLES_LIST.Editor),createNews)

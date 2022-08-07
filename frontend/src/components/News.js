@@ -1,49 +1,62 @@
-import { useState,useEffect } from 'react'
 import Comments from './Comments'
-import {useLocation,Link } from "react-router-dom"
-import useGlobalContext from '../hooks/useGlobalContext'
-// import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import {useLocation,Link,useNavigate } from "react-router-dom"
+import {selectNewsById} from '../features/news/newsSlice'
+import {useSelector} from 'react-redux'
+import {useLikeNewsMutation} from '../features/news/newsApiSlice'
+import {useDispatch} from 'react-redux'
+import {updateNews} from '../features/news/newsSlice'
+import {selectCurrentRoles} from '../features/auth/authSlice'
 import React from 'react'
-const News = React.forwardRef(({_id,username,title,body,comments,likes,liked},ref) => {
-  const {likeNews} = useGlobalContext()
-  const [open, setOpen] = useState(false);
-  // const [liked,setLiked] = useState(likes.includes(user))
-  // const axiosPrivate = useAxiosPrivate()
+const News = React.forwardRef(({newsId},ref) => {
   const location = useLocation()
-  const likeBtn = () => {
-    if(liked){
-      likeNews(_id,'unlike',location)
-    }else{
-      likeNews(_id,'like',location)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const article = useSelector((state) =>selectNewsById(state,newsId))
+  const [likeNews] = useLikeNewsMutation()
+  const roles = useSelector(selectCurrentRoles)
+
+  const likeBtn = async () => {
+    try{
+      if(article.likes.includes(newsId)){
+        const updatedArticle = await likeNews({newsId,like:'unlike'}).unwrap()
+        dispatch(updateNews(updatedArticle.data))
+      }else{
+        const updatedArticle = await likeNews({newsId,like:'like'}).unwrap()
+        dispatch(updateNews(updatedArticle.data))
+      }
+    }catch (err){
+      console.error(err);
+      navigate('/login', { state: { from: location }, replace: true });
     }
+    
   }
   const newsBody = (
     <>
       <div className="card">
-        <Link to={`/news/${_id}`} style={{textDecoration:'none',color:'black'}}>
-          <h5 className="card-header">{title}</h5>
+        <Link to={`/news/${newsId}`} style={{textDecoration:'none',color:'black'}}>
+          <h5 className="card-header">{article.title}</h5>
         </Link>
         <div className="card-body">
           <blockquote className="blockquote mb-0">
-            <Link to={`/news/${_id}`} style={{textDecoration:'none',color:'black'}}>
-              <p className="fs-6">{`${body.substring(0,200)}...`}</p>
+            <Link to={`/news/${newsId}`} style={{textDecoration:'none',color:'black'}}>
+              <p className="fs-6">{`${article.body.substring(0,200)}...`}</p>
             </Link>
-            <Link to={`/employee/${username}`} style={{textDecoration:'none',color:'black'}}>
-              <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{username}</cite></footer>
+            <Link to={`/employee/${article.employee}`} style={{textDecoration:'none',color:'black'}}>
+              <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{article.username}</cite></footer>
             </Link>
           </blockquote>
           <div className="btn-group mt-2" role="group" aria-label="Basic example">
-            <button type="button" className={`shadow-none btn ${liked ?'btn-danger':'btn-secondary'}`} onClick={likeBtn}>
-              Like <span className="badge text-bg-dark">{likes.length}</span>
+            <button type="button" className={`shadow-none btn ${article.likes.includes(newsId) ?'btn-danger':'btn-secondary'}`} onClick={likeBtn} disabled={roles.includes(2001) ? false : true}>
+              Like <span className="badge text-bg-dark">{article.likes.length}</span>
             </button>
-            <button className="btn btn-primary shadow-none" type="button" data-bs-toggle="collapse" data-bs-target={`#comments${_id}`} aria-expanded="false" aria-controls={`comments${_id}`}>
+            <button className="btn btn-primary shadow-none" type="button" data-bs-toggle="collapse" data-bs-target={`#comments${newsId}`} aria-expanded="false" aria-controls={`comments${newsId}`}>
               Comments
             </button>
           </div>
         </div>
-        <div className="card-footer collapse" id={`comments${_id}`}>
+        <div className="card-footer collapse" id={`comments${newsId}`}>
           <div className="card card-body">
-            <Comments comments={comments} id={_id} />
+            <Comments comments={article.comments} newsId={newsId} />
           </div>
         </div>
       </div>
@@ -52,15 +65,6 @@ const News = React.forwardRef(({_id,username,title,body,comments,likes,liked},re
   const content = ref
     ? <div className="clearfix mt-2" ref={ref}>{newsBody}</div>
     : <div className="clearfix mt-2">{newsBody}</div>
-
-
-  // useEffect(()=>{
-  //   if(liked){
-  //     likeNews(axiosPrivate,_id,'like',location)
-  //   }else{
-  //     likeNews(axiosPrivate,_id,'unlike',location)
-  //   }
-  // },[liked])
 
   return content
 

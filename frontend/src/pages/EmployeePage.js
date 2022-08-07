@@ -42,7 +42,7 @@ const EmployeePage = () => {
           <button type="submit" className="btn btn-primary">Search</button>
         </div>
       </form>
-      <NewsGrid setNumPage={setNumPage}/>
+      {/* <NewsGrid setNumPage={setNumPage}/> */}
     </div>
   )
 }

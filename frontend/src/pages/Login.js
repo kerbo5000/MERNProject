@@ -6,8 +6,8 @@ import {useRef,useState,useEffect} from 'react'
 import {useNavigate,useLocation} from 'react-router-dom'
 // import useGlobalContext from '../hooks/useGlobalContext'
 import {useDispatch} from 'react-redux'
-import {setCredentials} from './authSlice'
-import {useLoginMutation} from './authApiSlice'
+import {setCredentials} from '../features/auth/authSlice'
+import {useLoginMutation} from '../features/auth/authApiSlice'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -20,7 +20,7 @@ const Login = () => {
   const [error,setError] = useState('')
 
   const [login,{isLoading}] = useLoginMutation()
-  const dispatch =useDispatch()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     userRef.current?.focus()
@@ -39,7 +39,9 @@ const Login = () => {
   const handleSubmit = async (e) =>{
     e.preventDefault()
     try{
-      const userDate = await login({user,pwd,endpoint}).unwrap()
+      console.log(endpoint)
+      console.log('hi')
+      const userData = await login({user,pwd,endpoint}).unwrap()
       dispatch(setCredentials({...userData,user}))
       setUser('')
       setPwd('')

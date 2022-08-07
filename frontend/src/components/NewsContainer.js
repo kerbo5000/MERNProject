@@ -1,18 +1,16 @@
 import {useLocation } from "react-router-dom"
 import {useEffect,useState,useRef,useCallback} from 'react'
-import useGlobalContext from '../hooks/useGlobalContext'
-import useNews from '../hooks/useNews'
 import News from './News'
+import {useGetNewsQuery,} from '../features/news/newsApiSlice'
+import {selectNewsIds} from '../features/news/newsSlice'
+import {useSelector} from 'react-redux'
 
-const NewsContainer = ({setNumPage}) => {
-  const {newsState,test,reset} = useGlobalContext()
-  const {loading,news,error,nextPage} = newsState
-  // const [numPage,setNumPage] = useState(0)
-  // const axiosPrivate = useAxiosPrivate()
-  const location = useLocation()
+const NewsContainer = ({setNumPage,nextPage}) => {
   const intObserver = useRef()
+  const {isLoading} = useGetNewsQuery()
+  const newsIds = useSelector(selectNewsIds)
   const lastNewsRef = useCallback(article =>{
-    if(loading){
+    if(isLoading){
        return
     }
     if(intObserver.current){
@@ -25,36 +23,26 @@ const NewsContainer = ({setNumPage}) => {
       }
     })
     if(article) intObserver.current.observe(article)
-  },[loading,nextPage])
+  },[isLoading,nextPage])
+  
   const content = (
               <div className="container">
-                {news.map((article,i) => {
-                  if(news.length === i + 1){
-                    return <News key={article._id} ref={lastNewsRef} {...article}/>
+                {newsIds.map((newsId,i) => {
+                  if(newsIds.length === i + 1){
+                    return <News key={newsId} ref={lastNewsRef} newsId={newsId}/>
                   }
-                  return <News key={article._id} {...article}/>
+                  return <News key={newsId} newsId={newsId}/>
                 })}
             </div>
             )
   return (
     <div className="card-body">
-      {loading &&
-          <div className="d-flex justify-content-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        }
-        {!loading &&
-          <>
-            {news.length ?
-              content :
-              (
-                <p className="card-text">No news to display</p>
-              )
-            }
-          </>
-        }
+      {news.length ?
+        content :
+        (
+          <p className="card-text">No news to display</p>
+        )
+      }
     </div>
   )
 }

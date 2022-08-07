@@ -13,8 +13,8 @@ const getNews = async (req,res) => {
     filter.employee = req.query.employee
   }
 
-  if(req?.query?.user){
-    filter.likes = req.query.user
+  if(req?.query?.liked){
+    filter.likes = req.query.liked
   }
 
   let limit = 0 
@@ -35,6 +35,47 @@ const getNews = async (req,res) => {
   }
 }
 
+const getNewsSearch = async (req,res) => {
+  let filter = {}
+  if(req?.query?.title){
+    filter.title = req.query.title
+  }
+
+  if(req?.query?.username){
+    filter.username = req.query.username
+  }
+
+  if(req?.query?.body){
+    filter.body = req.query.body
+  }
+
+  let limit = 0 
+  if(req?.query?.limit && !isNaN(req.query.limit)){
+    limit = parseInt(req.query.limit,10)
+  }
+
+  let skip = 0 
+
+  if(req?.query?.skip && !isNaN(req.query.skip)){
+    skip = parseInt(req.query.skip,10)
+  }
+  const search = Object.keys(filter).map(field => {
+     return {[field]:{$regex:filter[field],$options:'i'}}
+  })
+  try{
+    if(req?.query?.liked){
+      const news = await News.find({$and:[{$or:search},{liked:req.query.liked}]}).limit(limit).skip(skip)
+      res.status(200).json(news)
+    }else{
+      const news = await News.find({$or:search}).limit(limit).skip(skip)
+      res.status(200).json(news)
+    }
+    
+  }catch (err){
+    res.status(400).json({'message':err.message})
+  }
+}
+
 const createNews = async (req,res) => {
   if(!req?.body?.title || !req?.body?.body ){
     return res.status(400).json({'message':'title and body are required.'})
@@ -50,7 +91,8 @@ const createNews = async (req,res) => {
       const news = await News.create({
         title,
         body,
-        employee:req.userId
+        employee:req.userId,
+        username:req.username
       })
       const employee = await Employee.findById(req.userId)
       employee.news.push(news._id)
@@ -112,7 +154,7 @@ const addComment = async (req,res) => {
   }
   const news = req.target
   const body = req.body.comment
-  news.comments.push({body,user:req.userId})
+  news.comments.push({body,userId:req.userId,username:req.username})
   const result = await news.save()
   return res.status(200).json(result)
 }
@@ -190,5 +232,6 @@ module.exports = {
   deleteComment,
   getCommentByIndex,
   updateNews,
-  deleteNews
+  deleteNews,
+  getNewsSearch
 }

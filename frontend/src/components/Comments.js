@@ -1,19 +1,27 @@
-// import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { useLocation } from "react-router-dom"
-import useGlobalContext from '../hooks/useGlobalContext'
-
+import { useLocation,useNavigate } from "react-router-dom"
 import { useState } from 'react'
-const Comments = ({comments,id}) => {
-  const {commentNews,authState} = useGlobalContext()
-  const {roles} = authState
-  const [newComment,setNewComment] = useState('')
-  // const axiosPrivate = useAxiosPrivate()
-  const location = useLocation()
+import {useSelector} from 'react-redux'
+import {useCommentNewsMutation} from '../features/news/newsApiSlice'
+import {useDispatch} from 'react-redux'
+import {updateNews} from '../features/news/newsSlice'
+import {selectCurrentRoles} from '../features/auth/authSlice'
 
+const Comments = ({comments,newsId}) => {
+  const [newComment,setNewComment] = useState('')
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [commentNews] = useCommentNewsMutation()
+  const roles = useSelector(selectCurrentRoles)
+  const dispatch = useDispatch()
   const handleSubmit = async (e) => {
     e.preventDefault()
-    commentNews(id,newComment,location)
-    setNewComment('')
+    try{
+      const updatedArticle = await commentNews({newsId,newComment}).unwrap()
+      dispatch(updateNews(updateNews))
+    }catch (err){
+      console.error(err);
+      navigate('/login', { state: { from: location }, replace: true });
+    }
   }
   return (
     <>

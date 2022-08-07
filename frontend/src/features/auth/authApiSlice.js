@@ -2,7 +2,7 @@ import {apiSlice} from '../../app/api/apiSlice'
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     login: builder.mutation({
-      query: (user,pwd,endpoint) => ({
+      query: ({user,pwd,endpoint}) => ({
         url: `/auth/${endpoint}`,
         method: 'POST',
         body: {user,pwd}
@@ -19,7 +19,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: () => '/logout'
     }),
     updatePwd: builder.mutation({
-      query: (userID,oldPassword,newPassword) => ({
+      query: ({userID,oldPassword,newPassword}) => ({
         url: `/users/${userID}`,
         method:'PATCH',
         body:{oldPassword,newPassword}

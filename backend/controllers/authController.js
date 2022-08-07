@@ -32,6 +32,7 @@ const handleLogin = async (req,res) => {
         'UserInfo':{
           'userId':foundUser._id,
           'roles': roles,
+          'username':foundUser.username
         }
       },
       process.env.ACCESS_TOKEN_SECRET,
@@ -39,7 +40,7 @@ const handleLogin = async (req,res) => {
     )
     const refreshToken = jwt.sign(
       {
-        'id':foundUser._id
+        'id':foundUser.id
       },
       process.env.REFRESH_TOKEN_SECRET,
       {expiresIn:'1d'}
