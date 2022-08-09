@@ -32,7 +32,7 @@ const newsSchema = new Schema({
     type:mongoose.Schema.Types.ObjectId,  
     ref:'User'
     },
-    usernname:{
+    username:{
       type:String,
       required:true
     }

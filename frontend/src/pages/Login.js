@@ -20,6 +20,7 @@ const Login = () => {
   const [error,setError] = useState('')
 
   const [login,{isLoading}] = useLoginMutation()
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -39,8 +40,6 @@ const Login = () => {
   const handleSubmit = async (e) =>{
     e.preventDefault()
     try{
-      console.log(endpoint)
-      console.log('hi')
       const userData = await login({user,pwd,endpoint}).unwrap()
       dispatch(setCredentials({...userData,user}))
       setUser('')

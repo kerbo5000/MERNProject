@@ -62,15 +62,13 @@ const getNewsSearch = async (req,res) => {
   const search = Object.keys(filter).map(field => {
      return {[field]:{$regex:filter[field],$options:'i'}}
   })
+
+  if(!search.length){
+    return res.status(200).json([])
+  }
   try{
-    if(req?.query?.liked){
-      const news = await News.find({$and:[{$or:search},{liked:req.query.liked}]}).limit(limit).skip(skip)
-      res.status(200).json(news)
-    }else{
-      const news = await News.find({$or:search}).limit(limit).skip(skip)
-      res.status(200).json(news)
-    }
-    
+    const news = await News.find({$or:search}).limit(limit).skip(skip)
+    res.status(200).json(news)
   }catch (err){
     res.status(400).json({'message':err.message})
   }
@@ -150,6 +148,7 @@ const getComments = async (req,res) => {
 
 const addComment = async (req,res) => {
   if(!req?.body?.comment ){
+    console.log('hiiii')
     return res.status(400).json({'message':'Comment body is required.'})
   }
   const news = req.target
