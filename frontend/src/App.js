@@ -8,7 +8,7 @@ import Missing from './pages/Missing'
 // import UsersTable from './components/UsersTable'
 // import NewsTable from './components/NewsTable'
 // import EmployeesTable from './components/EmployeesTable'
-// import SingleNews from './pages/SingleNews'
+import SingleNews from './pages/SingleNews'
 // import EmployeePage from './pages/EmployeePage'
 import Favorites from './components/Favorites'
 import NewsFeed from './components/NewsFeed'
@@ -20,23 +20,24 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        /*public*/
+        {/*public*/}
         <Route path='login' element={<Login />}/>
         <Route path='register' element={<Register />}/>
         <Route path='unauthorized' element={<Unauthorized />}/>
-        /*private*/
+        {/* private */}
         <Route element={<RequiredAuth allowedRoles={[2001]}/>}>
           <Route path='/' element={<Home />}>
             <Route path='newsfeed' element={<NewsFeed />}/>
             <Route path='favorites' element={<Favorites />}/>
           </Route>
         </Route>
-        {/* <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
+         <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
           <Route path='news'>
             <Route path=':newsId' element={<SingleNews />}/>
-            <Route path=':employeeId' element={<EmployeePage />}/>
+            {/* <Route path=':employeeId' element={<EmployeePage />}/> */}
           </Route>
         </Route>
+        {/*
         <Route element={<RequiredAuth allowedRoles={[1984]}/>}>
           <Route path='editor' element={<Editor />}>
             <Route path='news' element={<NewsTable />}/>
@@ -47,7 +48,7 @@ function App() {
         <Route element={<RequiredAuth allowedRoles={[5150]}/>}>
           <Route path='admin' element={<Admin />}/>
         </Route> */}
-        /*catch all*/
+        {/* catch all */}
         <Route path='*' element={<Missing />}/>
       </Route>
     </Routes>

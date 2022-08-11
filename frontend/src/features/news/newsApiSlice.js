@@ -13,18 +13,18 @@ export const newsApiSlice = apiSlice.injectEndpoints({
     getLikedNews: builder.query({
       query: ({pageNum,userId}) =>  `/news?skip=${pageNum*5}&limit=5&liked=${userId}`,
       providesTags: (result,error,args) => 
-        result 
-        ? [...result.map(({_id:id}) => ({type:'News',id})),{type:'News',id:'PARTIAL-LIST'}]
-        : {type:'News',id:'PARTIAL-LIST'}
+        [...result.map(({_id:id}) => ({type:'News',id}))]
       
     }),
     getNewsSearch: builder.query({
       query: (search) => `/news/search?title=${search}&username=${search}&body=${search}`,
       providesTags: (result,error,args) => 
-        result 
-        ? [...result.map(({_id:id}) => ({type:'News',id})),{type:'News',id:'PARTIAL-LIST'}]
-        : {type:'News',id:'PARTIAL-LIST'}
-      
+        [...result.map(({_id:id}) => ({type:'News',id}))]
+    }),
+    getSingleNews: builder.query({
+      query: (id) => `/news/${id}`,
+      providesTags: (result,error,args) => 
+        [{type:'News',id:args._id}]
     }),
     createNews: builder.mutation({
       query: info => ({
@@ -76,5 +76,6 @@ export const {
   useCreateNewsMutation,
   useGetNewsSearchQuery,
   useUpdateNewsMutation,
-  useLikeNewsMutation
+  useLikeNewsMutation,
+  useGetSingleNewsQuery
 } = newsApiSlice

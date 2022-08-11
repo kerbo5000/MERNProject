@@ -24,18 +24,23 @@ const newsSchema = new Schema({
     ref:'User'
   }],
   comments:[{
-    body:{
-      type:String,
-      required:true
-    },
-    userId:{
-    type:mongoose.Schema.Types.ObjectId,  
-    ref:'User'
-    },
-    username:{
-      type:String,
-      required:true
-    }
+    type: new mongoose.Schema(
+      {
+        body:{
+          type:String,
+          required:true
+        },
+        userId:{
+        type:mongoose.Schema.Types.ObjectId,  
+        ref:'User'
+        },
+        username:{
+          type:String,
+          required:true
+        }
+      },
+      {timestamps:true}
+    )
   }],
 },
 {

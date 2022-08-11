@@ -23,7 +23,7 @@ const Comments = ({comments,newsId}) => {
   return (
     <>
       {roles.includes(2001) &&
-        <form className="row gy-2 gx-3 align-items-center" onSubmit={handleSubmit}>
+        <form className="row gy-2 gx-3 align-items-center mb-2" onSubmit={handleSubmit}>
           <div className="col-10">
             <input type="text" className="form-control" id="autoSizingInput" placeholder="Leave a comment" value={newComment}
               onChange={(e)=>setNewComment(e.target.value)} autoComplete='off'/>
@@ -33,12 +33,16 @@ const Comments = ({comments,newsId}) => {
           </div>
         </form>}
       {comments?.length ?
-        (<ul className="list-group ">
+        (<ul className="list-group">
           {comments.map((comment) => {
-            return <li className="list-group-item d-flex justify-content-between align-items-start mt-2" key={comment._id}>
+            return <li className="list-group-item d-flex justify-content-between align-items-start" key={comment._id}>
                     <div className="ms-2 me-auto">
                       <div className="fw-bold">{comment.username}</div>
                       {comment.body}
+                    </div>
+                    <div className="d-flex w-100 justify-content-between">
+                        <h5 className="mb-1">{article.title}</h5>
+                      <small>{format(new Date(article.createdAt),'PP')}</small>
                     </div>
                   </li>
           })}

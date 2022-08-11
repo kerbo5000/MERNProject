@@ -1,5 +1,4 @@
-import {useEffect} from 'react'
-import {  useGetNewsSearchQuery} from '../features/news/newsApiSlice'
+import {useGetNewsSearchQuery} from '../features/news/newsApiSlice'
 import {format} from 'date-fns'
 import {useLocation,useNavigate} from "react-router-dom"
 const SearchResult = ({search}) => {
@@ -7,7 +6,15 @@ const SearchResult = ({search}) => {
   const navigate = useNavigate()
   const {data:news,isLoading,isSuccess,isError,error} = useGetNewsSearchQuery(search)
   let content
-  if(isSuccess && news?.length){
+  if(isLoading){
+    content = (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    )
+  }else if (isSuccess && news?.length){
     content = (
       <div className="list-group overflow-scroll" style={{position:'absolute',top:'5px',zIndex:'3',height: '500px'}} >
         {news.map((article) => {
@@ -25,27 +32,11 @@ const SearchResult = ({search}) => {
     )
   }else if(isSuccess){
     content = (<p className="mb-1" style={{position:'absolute',top:'5px',zIndex:'3'}}>No news found</p>)
+  }else if(isError){
+    console.error(error);
+    navigate('/login', { state: { from: location }, replace: true });
   }
-  useEffect(() => {
-    if(isError){
-      console.error(error);
-      navigate('/login', { state: { from: location }, replace: true });
-    }
-  },[error,location,navigate,isError])
-  return (
-    <>
-      {isLoading &&
-      (
-        <div className="d-flex justify-content-center" >
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      )
-      }
-      {content}
-    </> 
-  )
+  return content
 }
 
 export default SearchResult
