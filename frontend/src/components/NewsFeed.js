@@ -33,11 +33,6 @@ const NewsFeed = () => {
     navigate('/login', { state: { from: location }, replace: true });
   }
 
-  // useEffect(() => {
-  //   if(isError){
-      
-  //   }
-  // },[pageNum,error,location,navigate,isError])
 
   return (
     <div className="card-body">

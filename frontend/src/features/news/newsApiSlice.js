@@ -21,6 +21,11 @@ export const newsApiSlice = apiSlice.injectEndpoints({
       providesTags: (result,error,args) => 
         [...result.map(({_id:id}) => ({type:'News',id}))]
     }),
+    getNewsByEmployee: builder.query({
+      query: (employeeId) => `/news?employee=${employeeId}`,
+      providesTags: (result,error,args) => 
+        [...result.map(({_id:id}) => ({type:'News',id}))]
+    }),
     getSingleNews: builder.query({
       query: (id) => `/news/${id}`,
       providesTags: (result,error,args) => 
@@ -77,5 +82,6 @@ export const {
   useGetNewsSearchQuery,
   useUpdateNewsMutation,
   useLikeNewsMutation,
-  useGetSingleNewsQuery
+  useGetSingleNewsQuery,
+  useGetNewsByEmployeeQuery
 } = newsApiSlice

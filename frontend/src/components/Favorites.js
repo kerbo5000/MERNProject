@@ -38,13 +38,6 @@ const Favorites = () => {
     navigate('/login', { state: { from: location }, replace: true });
   }
 
-  // useEffect(() => {
-  //   if(isError){
-  //     console.error(error);
-  //     navigate('/login', { state: { from: location }, replace: true });
-  //   }
-  // },[pageNum,error,location,navigate,isError])
-
   return (
     <div className="card-body">
       {content}

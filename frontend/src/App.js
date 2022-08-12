@@ -9,7 +9,7 @@ import Missing from './pages/Missing'
 // import NewsTable from './components/NewsTable'
 // import EmployeesTable from './components/EmployeesTable'
 import SingleNews from './pages/SingleNews'
-// import EmployeePage from './pages/EmployeePage'
+import EmployeePage from './pages/EmployeePage'
 import Favorites from './components/Favorites'
 import NewsFeed from './components/NewsFeed'
 import Unauthorized from './pages/Unauthorized'
@@ -34,7 +34,7 @@ function App() {
          <Route element={<RequiredAuth allowedRoles={[2001,1984,5150]}/>}>
           <Route path='news'>
             <Route path=':newsId' element={<SingleNews />}/>
-            {/* <Route path=':employeeId' element={<EmployeePage />}/> */}
+            <Route path='employee/:employeeId' element={<EmployeePage />}/>
           </Route>
         </Route>
         {/*

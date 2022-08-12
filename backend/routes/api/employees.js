@@ -22,10 +22,10 @@ router.route('/:employeeId')
   .delete(verifyRoles(ROLES_LIST.Admin),verifyId('employee'),deleteEmployee)
 
 router.route('/:employeeId/password')
-  .patch(verifyId('employee'),updateEmployeePwd)
+  .patch(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),verifyId('employee'),updateEmployeePwd)
 
 router.route('/:employeeId/username')
-  .patch(verifyId('employee'),updateEmployeeUsername)
+  .patch(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Editor),verifyId('employee'),updateEmployeeUsername)
 
 router.route('/:employeeId/roles')
   .patch(verifyId('employee'),verifyRoles(ROLES_LIST.Admin),updateEmployeeRole)

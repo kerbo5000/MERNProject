@@ -39,9 +39,9 @@ const News = ({article}) => {
       <div className="card-body">
         <blockquote className="blockquote mb-0">
           <Link to={`/news/${article._id}`} style={{textDecoration:'none',color:'black'}}>
-            <p className="fs-6">{`${article.body.substring(0,100)}...`}</p>
+            <p className="fs-6">{`${article.body.substring(0,300)}...`}</p>
           </Link>
-          <Link to={`/employee/${article.employee}`} style={{textDecoration:'none',color:'black'}}>
+          <Link to={`/news/employee/${article.employee}`} style={{textDecoration:'none',color:'black'}}>
             <footer className="blockquote-footer"><cite title="Source Title" className="fs-6">{article.username}</cite></footer>
           </Link>
         </blockquote>

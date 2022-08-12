@@ -1,48 +1,48 @@
-import { useState,useEffect } from 'react'
-import {useLocation,useParams,useNavigate} from "react-router-dom"
-import useGlobalContext from '../hooks/useGlobalContext'
-// import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import {useGetEmployeeByIdQuery} from '../features/employees/employeesApiSlice'
+import {useLocation,useNavigate,Link,useParams} from "react-router-dom"
 import NewsGrid from '../components/NewsGrid'
 
 const EmployeePage = () => {
-  const {username} = useParams()
-  // const axiosPrivate = useAxiosPrivate()
-  const {employeeNews,newsState,likeNews} = useGlobalContext()
-  const [numPage,setNumPage] = useState(0)
-  const [search,setSearch] = useState({
-                                      inputText:'',
-                                      inputRadio:'title'
-                                      })
-  const handleInput = (e) => {
-    setSearch(prevSearch => {
-      return {...prevSearch,
-              [e.target.name]:e.target.value
-            }
-    })
-  }
-
-  useEffect(()=>{
-    employeeNews(numPage,search,username)
-  },[numPage])
-
-  const handleSubmit = (e) =>{
-    e.preventDefault()
-    setNumPage(0)
+  const {employeeId} = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const {data:employee,isLoading,isError,isSuccess,error} = useGetEmployeeByIdQuery(employeeId)
+  let content
+  if(isLoading){
+    content = (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    )
+  }else if(isSuccess && employee?.news.length){
+    content = (
+                <>
+                  <h5 className="card-title ">{`${employee.username}'s page`}</h5>
+                  <div className="row row-cols-1 row-cols-md-2 g-4">
+                    {employee.news.map((article) => <NewsGrid key={article} article={article}/>
+                    )}
+                  </div>
+                </>     
+              )
+  }else if(isSuccess){
+    content = (
+                <>
+                  <h5 className="card-title ">{`${employee.username}'s page`}</h5>
+                  <div class="alert alert-dark" role="alert">
+                    No news to display
+                  </div>
+                </>
+              )
+  }else if(isError){
+    console.error(error);
+    navigate('/login', { state: { from: location }, replace: true });
   }
 
   return (
     <div className="card-body">
-      <h5 className="card-title ">{`${username}'s page`}</h5>
-      <form className="row gy-2 gx-3 align-items-center mb-2" onSubmit={handleSubmit}>
-        <div className="col-10">
-          <input type="text" className="form-control" name="inputText" onChange={handleInput}
-          value={search.inputText}/>
-        </div>
-        <div className="col-auto">
-          <button type="submit" className="btn btn-primary">Search</button>
-        </div>
-      </form>
-      {/* <NewsGrid setNumPage={setNumPage}/> */}
+      {content}
     </div>
   )
 }

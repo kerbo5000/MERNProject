@@ -43,15 +43,15 @@ const SingleNews = () => {
   }else if(isSuccess && news){
     content = (
           <div className="card-body px-5">
-            <h5 className="card-title">{news.title}</h5>
-            <Link to={`/employee/${news.employee}`} style={{textDecoration:'none',color:'black'}}>
+            <h3 className="card-title">{news.title}</h3>
+            <Link to={`/news/employee/${news.employee}`} style={{textDecoration:'none',color:'black'}}>
               <h6 className="card-subtitle mb-2 text-muted mt-2">{news.username} - Posted: {format(new Date(news.createdAt),'PP')}</h6>
             </Link>
-            <p className="fs-6 lh-base mt-2" style={text}>{`By ${news.body}`}</p>
+            <p className="fs-5 lh-lg mt-2" style={text}>{`By ${news.body}`}</p>
             <button type="button" className={`shadow-none btn ${news.likes.includes(userId) ?'btn-danger':'btn-secondary'}`} onClick={likeBtn} disabled={roles.includes(2001) ? false : true}>
             Like <span className="badge text-bg-dark">{news.likes.length}</span>
           </button>
-            <div className="card card-body mt-2">
+            <div className="card card-body mt-2 w-50">
               <Comments comments={news.comments} newsId={newsId} />
             </div>
           </div>

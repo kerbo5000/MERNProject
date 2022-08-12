@@ -8,7 +8,7 @@ const Missing = () => {
               Page Not Found
             </Card.Text>
             <Link to="/">
-              <Card.Link >Visit Our Homepage</Card.Link>
+              <Card.Text >Visit Our Homepage</Card.Text>
             </Link>
           </Card.Body>
     )

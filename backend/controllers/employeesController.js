@@ -32,8 +32,9 @@ const getEmployees = async (req,res) => {
         firstname:employee.firstname,
         lastname:employee.lastname,
         username:employee.username,
-        id:employee.id,
-        roles:employee.roles
+        _id:employee.id,
+        roles:employee.roles,
+        news:emnployee.news
       }
     ))
     return res.status(200).json(result)
@@ -47,7 +48,9 @@ const getEmployeeById = async (req,res) => {
     return res.status(200).json({firstname:employee.firstname,
                           lastname:employee.lastname,
                           username:employee.username,
-                          id:employee.id
+                          id:employee.id,
+                          roles:employee.roles,
+                          news:employee.news
                         })
   }
 }
