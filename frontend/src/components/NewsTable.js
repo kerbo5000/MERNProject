@@ -1,185 +1,196 @@
-import {useLocation } from "react-router-dom"
-import {useState,useEffect,useRef} from 'react'
-import useGlobalContext from '../hooks/useGlobalContext'
-// import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import NewsRow from './NewsRow'
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import NewsRow from "./NewsRow";
+import { useSelector } from "react-redux";
+import { useGetAllNewsQuery } from "../features/news/newsApiSlice";
+import { selectAllNews } from "../features/news/newsApiSlice";
+import SearchBar from "./SearchBar";
+import AddNewsForm from "./AddNewsForm";
+import Pagination from "./Pagination";
+import EditNewsForm from "./EditNewsForm";
 const NewsTable = () => {
-  const {newsState,addNews,test} = useGlobalContext()
-  const {loading,news,success} = newsState
-  // const axiosPrivate = useAxiosPrivate()
-  const location = useLocation()
-  const TITLE_REGEX = /^[a-zA-Z0-9-_\s]{3,40}$/
-  const BODY_REGEX = /^[a-zA-Z][a-zA-Z0-9-_\s]{10,200}$/
-  const [tab,setTab] = useState('search')
-  const [search,setSearch] = useState({
-                                      inputText:'',
-                                      inputRadio:''
-                                      })
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isloading, isSuccess, isError, error } = useGetAllNewsQuery();
+  const news = useSelector(selectAllNews);
+  const [newsOrder, setNewsOrder] = useState([]);
+  const [order, setOrder] = useState("default");
+  const [pageNum, setPageNum] = useState(0);
+  const [newsDisplay, setNewsDisplay] = useState([]);
+  const [nextPage, setNextPage] = useState(true);
+  const [editNewsId, setEditNewsId] = useState();
+  const [tab, setTab] = useState("add");
 
-  const [numPage,setNumPage] = useState(0)
-
-  const [body,setBody] = useState('')
-  const [validBody,setValidBody] = useState(false)
-  const [bodyFocus, setBodyFocus] = useState(false)
-  const [charatersLeft, setCharatersLeft] = useState(200)
-
-  const [title,setTitle] = useState('')
-  const [validTitle ,setValidTitle] = useState(false)
-  const [titleFocus, setTitleFocus] = useState(false)
-
-  useEffect(()=>{
-    setCharatersLeft(200 - body.length)
-    const result = BODY_REGEX.test(title)
-    setValidBody(result)
-  },[body])
-
-  useEffect(()=>{
-    setSearch({
-                inputText:'',
-                inputRadio:''
-              })
-  },[tab])
-
-  useEffect(()=>{
-    const result = TITLE_REGEX.test(title)
-    setValidTitle(result)
-  },[title])
-
-  const handleAdd = (e) => {
-    e.preventDefault()
-    addNews(location,title,body)
-  }
-
-  useEffect(()=>{
-    test(numPage,search,false,location)
-  },[numPage])
-
-  const handleSearch = (e) =>{
-    e.preventDefault()
-    setNumPage(0)
-  }
-
-  useEffect(()=> {
-    if(success){
-      setTitle('')
-      setBody('')
-      setCharatersLeft(200)
+  useEffect(() => {
+    setPageNum(0);
+    if (order === "default") {
+      setNewsOrder(news);
+    } else if (order === "likesInc") {
+      const result = news.sort((a, b) => b.likes.length - a.likes.length );
+      setNewsOrder(result);
+    } else if (order === "likesDec") {
+      const result = news.sort((a, b) =>  a.likes.length - b.likes.length);
+      setNewsOrder(result);
+    } else if (order === "dateRecent") {
+      const result = news.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setNewsOrder(result);
+    } else if (order === "dateOld") {
+      const result = news.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+      setNewsOrder(result);
     }
-  },[success])
+  }, [order, news]);
 
-  const handleInput = (e) => {
-    setSearch(prevSearch => {
-      return {...prevSearch,
-              [e.target.name]:e.target.value
-            }
-    })
-  }
+  useEffect(() => {
+    const result = newsOrder.filter((article, index) => Math.floor(index / 5) == pageNum);
+    console.log(result)
+    if (result.length) {
+      setNewsDisplay(result);
+      setNextPage(true);
+    } else {
+      setNextPage(false);
+    }
+  }, [pageNum, order,newsOrder]);
+
+  useEffect(() => {
+    setOrder('default')
+    if (tab != "edit") {
+      setEditNewsId();
+    }
+  }, [tab]);
 
   return (
-        <div className="container">
-          <ul className="nav nav-tabs mt-2">
-            <li className="nav-item">
-              <a className={`nav-link ${tab === 'add' ? 'active':''}`} aria-current="page" onClick={()=>setTab('add')} > Add news
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className={`nav-link ${tab === 'search' ? 'active':''}`} onClick={()=>setTab('search')} > Search
-              </a>
-            </li>
-          </ul>
-          {success &&
-            <div className="alert alert-success" role="alert">
-              Your news has been added
-            </div>
-          }
-          {tab === 'search' ?
-            (<form onSubmit={handleSearch}>
-              <div className="row mb-3">
-                <label htmlFor="inputText" className="col-sm-2 col-form-label">Search</label>
-                <div className="col-sm-10">
-                  <input type="text" className="form-control" id="inputText" name="inputText" onChange={handleInput}
-                  value={search.inputText}/>
-                </div>
-              </div>
-              <fieldset className="row mb-3">
-                <legend className="col-form-label col-sm-2 pt-0">Filter</legend>
-                <div className="col-sm-10">
-                  <div className="form-check">
-                    <input className="form-check-input" type="radio" name="inputRadio" id="username"  value="username" onChange={handleInput}/>
-                    <label className="form-check-label" htmlFor="username">
-                      Username
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input className="form-check-input" type="radio" name="inputRadio" id="title" value="title" onChange={handleInput}/>
-                    <label className="form-check-label" htmlFor="title">
-                      Title
-                    </label>
-                  </div>
-                </div>
-              </fieldset>
-              <button type="submit" className="btn btn-primary">Search</button>
-            </form>):
-            (<form className="row g-2 mt-2" onSubmit={handleAdd}>
-              <div className="mb-3">
-                <label  className="form-label">Title</label>
-                <input className="form-control"
-                      type="text"
-                      onChange={(e)=> setTitle(e.target.value)}
-                      value={title}
-                      autoComplete='off'
-                      onFocus={()=>setTitleFocus(true)}
-                      onBlur={()=>setTitleFocus(false)}/>
-                      {(titleFocus && title && !validTitle) &&
-                        <div className="alert alert-dark" role="alert">
-                          Must be between 3 to 40 characters.
-                        </div>
-                      }
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Body</label>
-                <textarea className="form-control" rows="3"
-                          onChange={(e)=> setBody(e.target.value)}
-                          value={body}
-                          onFocus={()=>setBodyFocus(true)}
-                          onBlur={()=>setBodyFocus(false)}></textarea>
-                {(bodyFocus && body && !validBody) &&
-                  <div className="alert alert-dark" role="alert">
-                    Must be between 10 to 200 characters.
-                    {`You have ${charatersLeft} charaters left`}
-                  </div>
-                }
-              </div>
-              <div className="col-12">
-                <button type="submit" className="btn btn-primary" disabled={!validTitle||!validBody? true: false}>Add News</button>
-              </div>
-            </form>)
-        }
-        {news.length ? (
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">id</th>
-              <th scope="col">Username</th>
-              <th scope="col">Title</th>
-              <th scope="col">Likes</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-          {news.map((article)=> {
-            return (<NewsRow {...article} key={article._id}/>
-            )
-          })}
-          </tbody>
-          </table>
-      ):(
-        <div className="card-body">
-          <p className="card-text">No news to display</p>
-        </div>
+    <div className="container">
+      <ul className="nav nav-tabs mt-2">
+        <li className="nav-item">
+          <a
+            className={`nav-link ${tab === "add" ? "active" : ""}`}
+            onClick={() => setTab("add")}
+          >
+            {" "}
+            Add news
+          </a>
+        </li>
+        <li className="nav-item">
+          <a className={`nav-link ${tab === "edit" ? "active" : ""} ${!editNewsId ? 'disabled': ''}`}>
+            {" "}
+            Edit News
+          </a>
+        </li>
+      </ul>
+      {tab === "add" ? (
+        <AddNewsForm />
+      ) : (
+        <EditNewsForm editNewsId={editNewsId} />
       )}
-      </div>
+      <SearchBar news={news} setNewsOrder={setNewsOrder} />
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Title</th>
+            <th scope="col">
+              <div>
+                Likes
+                <div
+                  className="btn-group btn-group-sm ps-2"
+                  role="group"
+                  aria-label="Basic checkbox toggle button group"
+                >
+                  <input
+                    type="checkbox"
+                    className="btn-check"
+                    id="btnLikesInc"
+                    autoComplete="off"
+                    checked={order === "likesInc" ? true : false}
+                    onChange={() =>
+                      order === "likesInc"
+                        ? setOrder("default")
+                        : setOrder("likesInc")
+                    }
+                  />
+                  <label className="btn btn-outline-primary" htmlFor="btnLikesInc">
+                    ⥣
+                  </label>
+
+                  <input
+                    type="checkbox"
+                    className="btn-check"
+                    id="btnLikesDec"
+                    autoComplete="off"
+                    checked={order === "likesDec" ? true : false}
+                    onChange={() =>
+                      order === "likesDec"
+                        ? setOrder("default")
+                        : setOrder("likesDec")
+                    }
+                  />
+                  <label className="btn btn-outline-primary" htmlFor="btnLikesDec">
+                    ⥥
+                  </label>
+                </div>
+              </div>
+            </th>
+            <th scope="col">
+              <div>
+                Date
+                <div
+                  className="btn-group btn-group-sm ps-2"
+                  role="group"
+                  aria-label="Basic checkbox toggle button group"
+                >
+                  <input
+                    type="checkbox"
+                    className="btn-check"
+                    id="btnDateRecent"
+                    autoComplete="off"
+                    checked={order === "dateRecent" ? true : false}
+                    onChange={() =>
+                      order === "dateRecent"
+                        ? setOrder("default")
+                        : setOrder("dateRecent")
+                    }
+                  />
+                  <label className="btn btn-outline-primary" htmlFor="btnDateRecent">
+                    ⥣
+                  </label>
+
+                  <input
+                    type="checkbox"
+                    className="btn-check"
+                    id="btnDateOld"
+                    autoComplete="off"
+                    checked={order === "dateOld" ? true : false}
+                    onChange={() =>
+                      order === "dateOld"
+                        ? setOrder("default")
+                        : setOrder("dateOld")
+                    }
+                  />
+                  <label className="btn btn-outline-primary" htmlFor="btnDateOld">
+                    ⥥
+                  </label>
+                </div>
+              </div>
+            </th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {nextPage && newsDisplay.map((article) => <NewsRow {...article} key={article._id} setEditNewsId={setEditNewsId} setTab={setTab}/>)}
+        </tbody>
+      </table>
+      <Pagination
+        pageNum={pageNum}
+        setPageNum={setPageNum}
+        nextPage={nextPage}
+      />
+    </div>
   );
-}
+};
 
 export default NewsTable;

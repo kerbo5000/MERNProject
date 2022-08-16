@@ -1,57 +1,102 @@
-import { apiSlice } from '../../app/api/apiSlice'
+import { apiSlice } from "../../app/api/apiSlice";
+import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+
+
+const employeesAdapter = createEntityAdapter({
+  selectId: (employee) => employee._id,
+});
+
+const initialState = employeesAdapter.getInitialState();
 
 export const employeeApiSlice = apiSlice.injectEndpoints({
-  endpoints:builder => ({
-    getEmployees: builder.query({
-      query: (pageNum = 0 ) => `/employees?skip=${pageNum*5}&limit=5`,
-      providesTags: (result,error,args) => 
-        result 
-        ? [...result.map(({_id:id}) => ({type:'Employees',id})),{type:'Employees',id:'LIST'}]
-        : {type:'Employees',id:'LIST'}
-      
+  endpoints: (builder) => ({
+    getAllEmployees: builder.query({
+      query: () => `/employees`,
+      transformResponse: (response) => 
+        employeesAdapter.setAll(initialState,response)
+      providesTags: (result, error, args) =>
+        result
+          ? [
+              ...result.map(({ _id: id }) => ({ type: "Employees", id })),
+              { type: "Employees", id: "LIST" },
+            ]
+          : { type: "Employees", id: "LIST" },
     }),
     getEmployeeById: builder.query({
       query: (id) => `/employees/${id}`,
-      providesTags: (result,error,args) => 
-        [{type:'Employees',id:args._id}]
+      providesTags: (result, error, args) => [
+        { type: "Employees", id: args._id },
+      ],
     }),
     createEmployee: builder.mutation({
-      query: info => ({
-        url:'/employee',
-        method:'POST',
-        body:{...info}
+      query: (info) => ({
+        url: "/employee",
+        method: "POST",
+        body: { ...info },
       }),
-      invalidatesTags: [
-        { type: 'Employees', id: "LIST" }
-      ]
+      invalidatesTags: [{ type: "Employees", id: "LIST" }],
     }),
     updateEmployeePwd: builder.mutation({
-      query: ({employeeId,info}) => ({
-        url:`/employees/${employeeId}/password`,
-        method:'PATCH',
-        body:{...info}
+      query: ({ employeeId, info }) => ({
+        url: `/employees/${employeeId}/password`,
+        method: "PATCH",
+        body: { ...info },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: 'Employees', id: arg._id }
-    ]
-
+        { type: "Employees", id: arg._id },
+      ],
     }),
     updateEmployeeUsername: builder.mutation({
-      query: ({employeeId,info}) => ({
-        url:`/employees/${employeeId}/username`,
-        method:'PATCH',
-        body:{...info}
+      query: ({ employeeId, info }) => ({
+        url: `/employees/${employeeId}/username`,
+        method: "PATCH",
+        body: { ...info },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: 'Employees', id: arg._id }
-    ]
-    })
-  })
-})
+        { type: "Employees", id: arg._id },
+      ],
+    }),
+    getEmployeeNotifications: builder.query({
+      query: (employeeId) => `/employees/${employeeId}/notifications`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.map(({ _id: id }) => ({ type: "Notifications", id })),
+              { type: "Notifications", id: "LIST" },
+            ]
+          : { type: "Notifications", id: "LIST" },
+    }),
+    deleteEmployeeNotification: builder.mutation({
+      query: ({ employeeId, notificationId }) => ({
+        url: `/employees/${employeeId}/notifications/${notificationId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Notification", id: arg._id },
+      ],
+    }),
+  }),
+});
+
+export const selectEmployeesResult = employeesApiSlice.endpoints.getAllEmployees.select();
+
+const selectEmployeesData = createSelector(
+  selectEmployeesResult,
+  (employeesResult) => employeesResult.data
+);
+
+export const {
+  selectAll: selectAllEmployees,
+  selectById: selectEmployeeById,
+  selectIds: selectEmployeesIds,
+} = employeesAdapter.getSelectors((state) => selectEmployeesData(state) ?? initialState);
+
 export const {
   useCreateEmployeeMutation,
   useGetEmployeeByIdQuery,
-  useGetEmployeesQuery,
+  useGetAllEmployeesQuery,
   useUpdateEmployeePwdMutation,
-  useUpdateEmployeeUsernameMutation
-} = employeeApiSlice
+  useUpdateEmployeeUsernameMutation,
+  useGetEmployeeNotificationsQuery,
+  useDeleteEmployeeNotificationMutation,
+} = employeeApiSlice;

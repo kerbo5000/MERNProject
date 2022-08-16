@@ -1,18 +1,16 @@
-
-import { Outlet } from "react-router-dom"
-import Header from '../components/Header'
+import { Outlet } from "react-router-dom";
+import Header from "../components/Header";
 const Layout = () => {
-
-    return (
-      <div className="container">
-        <div className="jumbotron">
-          <div className="card">
-            <Header />
-            <Outlet />
-          </div>
+  return (
+    <div className="container">
+      <div className="jumbotron">
+        <div className="card">
+          <Header />
+          <Outlet />
         </div>
       </div>
-    )
-}
+    </div>
+  );
+};
 
-export default Layout
+export default Layout;

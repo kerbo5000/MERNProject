@@ -1,4 +1,4 @@
-import {useGetNewsQuery} from '../features/news/newsApiSlice'
+import {useGetNewsPaginationQuery} from '../features/news/newsApiSlice'
 import {useState} from 'react'
 import {useLocation,useNavigate} from "react-router-dom"
 import News from './News'
@@ -8,7 +8,7 @@ const NewsFeed = () => {
   const [pageNum,setPageNum] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
-  const {data:news,isLoading,isError,isSuccess,error} = useGetNewsQuery(pageNum)
+  const {data:news,isLoading,isError,isSuccess,error} = useGetNewsPaginationQuery(pageNum)
   let content
   if(isLoading){
     content = (

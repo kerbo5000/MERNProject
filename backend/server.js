@@ -33,7 +33,7 @@ app.use('/news',require('./routes/api/news'))
 app.use('/users',require('./routes/api/users'))
 
 app.all('*',(req,res) => {
-  res.status(400)
+  res.status(404)
   res.json({error:"404 not found"})
 })
 
