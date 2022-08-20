@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const SearchBar = ({ setNewsOrder, news }) => {
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState('');
   const handleSubmit = (e) => {
     e.preventDefault();
   };

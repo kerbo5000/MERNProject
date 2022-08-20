@@ -41,6 +41,10 @@ const employeeSchema = new Schema({
             ref: "News",
             required: true,
           },
+          title: {
+            type: String,
+            required: true,
+          },
           action: {
             type: String,
             required: true,

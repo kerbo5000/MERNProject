@@ -1,8 +1,8 @@
-import { selectNewsById } from "../features/news/newsApiSlice";
+import { selectEmployeeById } from "../features/employees/employeesApiSlice";
 import { useSelector } from "react-redux";
-import { useUpdateNewsMutation } from "../features/news/newsApiSlice";
+import { useUpdateEmployeePwdMutation,useUpdateEmployeeUsernameMutation,} from "../features/employees/employeesApiSlice";
 import { useState, useEffect } from "react";
-const EditNewsForm = ({ editNewsId }) => {
+const EditNewsForm = ({ editEmployeeId }) => {
   const [updateNews, { isLoading }] = useUpdateNewsMutation();
   
   const news = useSelector((state) => selectNewsById(state, editNewsId));

@@ -1,5 +1,5 @@
 import {useGetNewsPaginationQuery} from '../features/news/newsApiSlice'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {useLocation,useNavigate} from "react-router-dom"
 import News from './News'
 import Pagination from './Pagination'
@@ -25,7 +25,7 @@ const NewsFeed = () => {
             </div>
     )
   }else if(isSuccess){
-    content = (<div class="alert alert-dark" role="alert">
+    content = (<div className="alert alert-dark" role="alert">
                 No news to display
               </div>)  
   }else if(isError){
@@ -33,7 +33,9 @@ const NewsFeed = () => {
     navigate('/login', { state: { from: location }, replace: true });
   }
 
-
+  useEffect(() => {
+    window.scrollTo(0,0)
+  },[pageNum])
   return (
     <div className="card-body">
       {content}

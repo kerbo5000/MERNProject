@@ -33,18 +33,18 @@ const SearchResult = ({ search }) => {
       >
         {news.map((article) => {
           return (
-            <Link
+              <Link
               to={`/news/${article._id}`}
               className="list-group-item list-group-item-action"
               key={article._id}
-            >
-              <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">{article.title}</h5>
-                <small>{format(new Date(article.createdAt), "PP")}</small>
-              </div>
-              <p className="mb-1">{`${article.body.substring(0, 50)}...`}</p>
-              <small>{article.username}</small>
-            </Link>
+              >
+                <div className="d-flex w-100 justify-content-between">
+                  <h5 className="mb-1">{article.title}</h5>
+                  <small>{format(new Date(article.createdAt), "PP")}</small>
+                </div>
+                <p className="mb-1">{`${article.body.substring(0, 50)}...`}</p>
+                <small>{article.username}</small>
+              </Link>
           );
         })}
       </div>

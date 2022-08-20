@@ -16,10 +16,11 @@ const handleRefreshToken = async (req, res) => {
       return res.sendStatus(403);
     }
     const roles = Object.values(foundUser.roles);
+
     const accessToken = jwt.sign(
       {
         UserInfo: {
-          userId: decoded._id,
+          userId: decoded.id,
           roles: roles,
           username: foundUser.username,
         },
@@ -27,7 +28,7 @@ const handleRefreshToken = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1h" }
     );
-    res.json({ accessToken, id: decoded._id, roles });
+    res.json({ accessToken, id: decoded.id, roles });
   });
 };
 module.exports = { handleRefreshToken };

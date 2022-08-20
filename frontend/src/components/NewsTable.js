@@ -9,8 +9,6 @@ import AddNewsForm from "./AddNewsForm";
 import Pagination from "./Pagination";
 import EditNewsForm from "./EditNewsForm";
 const NewsTable = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { isloading, isSuccess, isError, error } = useGetAllNewsQuery();
   const news = useSelector(selectAllNews);
   const [newsOrder, setNewsOrder] = useState([]);
@@ -26,10 +24,10 @@ const NewsTable = () => {
     if (order === "default") {
       setNewsOrder(news);
     } else if (order === "likesInc") {
-      const result = news.sort((a, b) => b.likes.length - a.likes.length );
+      const result = news.sort((a, b) => b.likes.length - a.likes.length);
       setNewsOrder(result);
     } else if (order === "likesDec") {
-      const result = news.sort((a, b) =>  a.likes.length - b.likes.length);
+      const result = news.sort((a, b) => a.likes.length - b.likes.length);
       setNewsOrder(result);
     } else if (order === "dateRecent") {
       const result = news.sort(
@@ -45,23 +43,25 @@ const NewsTable = () => {
   }, [order, news]);
 
   useEffect(() => {
-    const result = newsOrder.filter((article, index) => Math.floor(index / 5) == pageNum);
-    console.log(result)
-    if (result.length) {
-      setNewsDisplay(result);
+    const result = newsOrder.filter(
+      (article, index) => Math.floor(index / 5) == pageNum
+    );
+    if (result.length === 5) {
       setNextPage(true);
     } else {
       setNextPage(false);
     }
-  }, [pageNum, order,newsOrder]);
+    setNewsDisplay(result);
+  }, [pageNum, order, newsOrder]);
 
   useEffect(() => {
-    setOrder('default')
+    setOrder("default");
     if (tab != "edit") {
       setEditNewsId();
     }
   }, [tab]);
 
+  
   return (
     <div className="container">
       <ul className="nav nav-tabs mt-2">
@@ -75,7 +75,11 @@ const NewsTable = () => {
           </a>
         </li>
         <li className="nav-item">
-          <a className={`nav-link ${tab === "edit" ? "active" : ""} ${!editNewsId ? 'disabled': ''}`}>
+          <a
+            className={`nav-link ${tab === "edit" ? "active" : ""} ${
+              !editNewsId ? "disabled" : ""
+            }`}
+          >
             {" "}
             Edit News
           </a>
@@ -113,7 +117,10 @@ const NewsTable = () => {
                         : setOrder("likesInc")
                     }
                   />
-                  <label className="btn btn-outline-primary" htmlFor="btnLikesInc">
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="btnLikesInc"
+                  >
                     ⥣
                   </label>
 
@@ -129,7 +136,10 @@ const NewsTable = () => {
                         : setOrder("likesDec")
                     }
                   />
-                  <label className="btn btn-outline-primary" htmlFor="btnLikesDec">
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="btnLikesDec"
+                  >
                     ⥥
                   </label>
                 </div>
@@ -155,7 +165,10 @@ const NewsTable = () => {
                         : setOrder("dateRecent")
                     }
                   />
-                  <label className="btn btn-outline-primary" htmlFor="btnDateRecent">
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="btnDateRecent"
+                  >
                     ⥣
                   </label>
 
@@ -171,7 +184,10 @@ const NewsTable = () => {
                         : setOrder("dateOld")
                     }
                   />
-                  <label className="btn btn-outline-primary" htmlFor="btnDateOld">
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="btnDateOld"
+                  >
                     ⥥
                   </label>
                 </div>
@@ -181,9 +197,22 @@ const NewsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {nextPage && newsDisplay.map((article) => <NewsRow {...article} key={article._id} setEditNewsId={setEditNewsId} setTab={setTab}/>)}
+          {newsDisplay.length ?
+            newsDisplay.map((article) => (
+              <NewsRow
+                {...article}
+                key={article._id}
+                setEditNewsId={setEditNewsId}
+                setTab={setTab}
+              />
+            )) : null}
         </tbody>
       </table>
+      {!newsDisplay.length && (
+        <div className="alert alert-dark" role="alert">
+          No news to display
+        </div>
+      )}
       <Pagination
         pageNum={pageNum}
         setPageNum={setPageNum}

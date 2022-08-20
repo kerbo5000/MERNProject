@@ -35,7 +35,7 @@ const User = () => {
       <ul className="nav nav-tabs mt-2">
         <li className="nav-item">
           <Link
-            to="/newsfeed"
+            to="/user/newsfeed"
             className={`nav-link ${tab === "newsfeed" ? "active" : ""}`}
             aria-current="page"
             onClick={() => setTab("newsfeed")}
@@ -45,7 +45,7 @@ const User = () => {
         </li>
         <li className="nav-item">
           <Link
-            to="/favorites"
+            to="/user/favorites"
             className={`nav-link ${tab === "favorites" ? "active" : ""}`}
             onClick={() => setTab("favorites")}
           >

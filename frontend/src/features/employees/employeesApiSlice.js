@@ -13,7 +13,7 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
     getAllEmployees: builder.query({
       query: () => `/employees`,
       transformResponse: (response) => 
-        employeesAdapter.setAll(initialState,response)
+        employeesAdapter.setAll(initialState,response),
       providesTags: (result, error, args) =>
         result
           ? [
@@ -56,29 +56,17 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         { type: "Employees", id: arg._id },
       ],
     }),
-    getEmployeeNotifications: builder.query({
-      query: (employeeId) => `/employees/${employeeId}/notifications`,
-      providesTags: (result, error, arg) =>
-        result
-          ? [
-              ...result.map(({ _id: id }) => ({ type: "Notifications", id })),
-              { type: "Notifications", id: "LIST" },
-            ]
-          : { type: "Notifications", id: "LIST" },
-    }),
-    deleteEmployeeNotification: builder.mutation({
-      query: ({ employeeId, notificationId }) => ({
-        url: `/employees/${employeeId}/notifications/${notificationId}`,
+    deleteEmployee: builder.mutation({
+      query: (employeeId) => ({
+        url: `/news/${employeeId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Notification", id: arg._id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: "Employees", id: arg._id }],
     }),
   }),
 });
 
-export const selectEmployeesResult = employeesApiSlice.endpoints.getAllEmployees.select();
+export const selectEmployeesResult = employeeApiSlice.endpoints.getAllEmployees.select();
 
 const selectEmployeesData = createSelector(
   selectEmployeesResult,
@@ -97,6 +85,5 @@ export const {
   useGetAllEmployeesQuery,
   useUpdateEmployeePwdMutation,
   useUpdateEmployeeUsernameMutation,
-  useGetEmployeeNotificationsQuery,
-  useDeleteEmployeeNotificationMutation,
+  useDeleteEmployeeMutation
 } = employeeApiSlice;

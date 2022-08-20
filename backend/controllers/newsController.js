@@ -131,12 +131,13 @@ const likeNews = async (req, res) => {
       if (notifIndex != -1) {
         notif = employee.notifications[notifIndex];
         notif.amount = notif.amount + 1;
-        await notif.save();
+        // await notif.save();
       } else {
         employee.notifications.push({
           newsId: news._id,
           action: "like",
           amount: 1,
+          title:news.title
         });
       }
       await employee.save();
@@ -173,7 +174,7 @@ const addComment = async (req, res) => {
   news.comments.push({ body, userId: req.userId, username: req.username });
   const employee = await Employee.findById(news.employee);
   const notifIndex = employee.notifications.findIndex(
-    ({ newsId, action }) => newsId.equals(news._id) && action === "like"
+    ({ newsId, action }) => newsId.equals(news._id) && action === "comment"
   );
   if (notifIndex != -1) {
     notif = employee.notifications[notifIndex];
@@ -182,8 +183,9 @@ const addComment = async (req, res) => {
   } else {
     employee.notifications.push({
       newsId: news._id,
-      action: "like",
+      action: "comment",
       amount: 1,
+      title:news.title
     });
   }
   await employee.save();

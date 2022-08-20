@@ -16,7 +16,6 @@ const NewsRow = ({
   const userId = useSelector(selectCurrentUserId);
   const [deleteNews] = useDeleteNewsMutation();
   const editNews = () => {
-    console.log('hi')
     setEditNewsId(_id);
     setTab("edit");
   };
@@ -29,24 +28,15 @@ const NewsRow = ({
       <td>{format(new Date(createdAt), "PP")}</td>
       <td>
         {userId == employee ? (
-          <div
-            className="btn-group-sm btn-group"
-            role="group"
-            aria-label="Basic mixed styles example"
-          >
-            <Link to={`/news/${_id}`} className="btn btn-primary">
-              Read news
-            </Link>
-            <button type="button" className="btn btn-warning" onClick={editNews}>
-              Edit news
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => deleteNews(_id)}
-            >
-              Delete news
-            </button>
+          <div className="dropdown">
+            <button className="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+            <ul className="dropdown-menu">
+              <Link to={`/news/${_id}`} style={{ textDecoration: "none", color: "black" }}>
+                <li><button className="dropdown-item read" type="button" >Read news</button></li>
+              </Link>
+              <li><button className="dropdown-item edit" type="button" onClick={editNews}>Edit news</button></li>
+              <li><button className="dropdown-item delete" type="button" onClick={() => deleteNews(_id)}>Delete news</button></li>
+            </ul>
           </div>
         ) : (
           <Link to={`/news/${_id}`} className="btn btn-primary btn-sm">

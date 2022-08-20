@@ -34,7 +34,7 @@ const getEmployees = async (req, res) => {
       username: employee.username,
       _id: employee.id,
       roles: employee.roles,
-      news: emnployee.news,
+      news: employee.news,
     }));
     return res.status(200).json(result);
   }
@@ -166,7 +166,7 @@ const deleteNotification = async (req, res) => {
     const result = await employee.save();
     return res.status(200).json({_id:req.params.notificationId});
   } else {
-    return res.status(403);
+    return res.snedStatus(403);
   }
 };
 
@@ -175,7 +175,7 @@ const getNotifications = async (req, res) => {
   if (req.roles.includes(ROLES_LIST.Admin) || employee._id.equals(req.userId)) {
     return res.status(200).json(employee.notifications);
   } else {
-    return res.status(403);
+    return res.sendStatus(403);
   }
 };
 

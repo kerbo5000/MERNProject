@@ -73,7 +73,7 @@ const SingleNews = () => {
         >
           Like <span className="badge text-bg-dark">{news.likes.length}</span>
         </button>
-        <div className="card card-body mt-2 w-50">
+        <div className="card card-body mt-2 w-50"  >
           <Comments comments={news.comments} newsId={newsId} />
         </div>
       </div>

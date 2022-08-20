@@ -44,7 +44,8 @@ const Login = () => {
       dispatch(setCredentials({ ...userData, user }));
       setUser("");
       setPwd("");
-      const from = endpoint === 'user' ? '/user/newsfeed' : 'editor/news'
+      const redirect  = endpoint === 'user' ? '/user/newsfeed' : '/editor/news'
+      const from = location.state?.from?.pathname || redirect;
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.originalStatus) {

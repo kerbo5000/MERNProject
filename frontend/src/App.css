@@ -1,0 +1,12 @@
+.dropdown-menu li > button.edit:hover , .dropdown-menu li > button.edit:focus, .dropdown-submenu:hover > button.edit {
+  background-image: none;
+  background-color: #ffda6a;
+}
+.dropdown-menu li > button.read:hover , .dropdown-menu li > button.read:focus, .dropdown-submenu:hover > button.read {
+  background-image: none;
+  background-color: #6ea8fe;
+}
+.dropdown-menu li > button.delete:hover , .dropdown-menu li > button.delete:focus, .dropdown-submenu:hover > button.delete{
+  background-image: none;
+  background-color: #ea868f;
+}

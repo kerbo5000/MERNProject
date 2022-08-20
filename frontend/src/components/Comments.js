@@ -51,7 +51,7 @@ const Comments = ({ comments, newsId }) => {
         </form>
       )}
       {comments?.length ? (
-        <ul className="list-group">
+        <ul className="list-group overflow-auto" style={{height: "500px"}}>
           {comments.map((comment) => {
             return (
               <li className="list-group-item" key={comment._id}>

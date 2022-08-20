@@ -2,11 +2,30 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "../features/auth/authSlice";
+import { useLogoutMutation } from "../features/auth/authApiSlice";
+import { logout as logoutAuth } from "../features/auth/authSlice";
+import { useDispatch } from "react-redux";
+
 const Header = () => {
   const token = useSelector(selectCurrentToken);
+  const navigate = useNavigate()
+  const [logout] = useLogoutMutation()
+  const dispatch = useDispatch();
+
+
+  const signOut = async () => {
+    try{
+      await logout().unwrap()
+      dispatch(logoutAuth())
+      navigate('/')
+    } catch (err){
+      navigate('/')
+    }
+  }
+  
   return (
     <Card.Header>
       <Navbar bg="light" expand="lg">
@@ -32,7 +51,7 @@ const Header = () => {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link as={Link} to="/logout" eventKey="logout">
+                  <Nav.Link onClick={signOut} eventKey="logout">
                     Logout
                   </Nav.Link>
                 </Nav.Item>
@@ -40,7 +59,7 @@ const Header = () => {
             ) : (
               <Nav className="ms-auto" defaultActiveKey={"login"}>
                 <Nav.Item>
-                  <Nav.Link as={Link} to="/login" eventKey="login">
+                  <Nav.Link as={Link} to="/" eventKey="login">
                     Login
                   </Nav.Link>
                 </Nav.Item>
