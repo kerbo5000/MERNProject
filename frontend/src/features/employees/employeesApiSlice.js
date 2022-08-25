@@ -17,7 +17,7 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, args) =>
         result
           ? [
-              ...result.map(({ _id: id }) => ({ type: "Employees", id })),
+              ...result.ids.map((id) => ({ type: "Employees", id })),
               { type: "Employees", id: "LIST" },
             ]
           : { type: "Employees", id: "LIST" },
@@ -30,7 +30,7 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
     }),
     createEmployee: builder.mutation({
       query: (info) => ({
-        url: "/employee",
+        url: "/employees",
         method: "POST",
         body: { ...info },
       }),
@@ -58,7 +58,7 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
     }),
     deleteEmployee: builder.mutation({
       query: (employeeId) => ({
-        url: `/news/${employeeId}`,
+        url: `/employees/${employeeId}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Employees", id: arg._id }],

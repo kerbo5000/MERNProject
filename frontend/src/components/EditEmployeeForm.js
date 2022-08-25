@@ -1,62 +1,50 @@
 import { selectEmployeeById } from "../features/employees/employeesApiSlice";
 import { useSelector } from "react-redux";
-import { useUpdateEmployeePwdMutation,useUpdateEmployeeUsernameMutation,} from "../features/employees/employeesApiSlice";
+import {
+  useUpdateEmployeePwdMutation,
+  useUpdateEmployeeUsernameMutation,
+} from "../features/employees/employeesApiSlice";
 import { useState, useEffect } from "react";
 const EditNewsForm = ({ editEmployeeId }) => {
-  const [updateNews, { isLoading }] = useUpdateNewsMutation();
-  
-  const news = useSelector((state) => selectNewsById(state, editNewsId));
+  const [updateEmployeePwd, { isLoading: pwdLoading }] =
+    useUpdateEmployeePwdMutation();
+  const [updateEmployeeUsername, { isLoading, usernameLoading }] =
+    useUpdateEmployeeUsernameMutation();
 
-  const TITLE_REGEX = /^[a-zA-Z0-9-_\s]{3,40}$/;
-  const BODY_REGEX = /^[a-zA-Z][a-zA-Z0-9,.\s]{100,400}$/;
+  const employee = useSelector((state) =>
+    selectEmployeeById(state, editEmployeeId)
+  );
   const [error, setError] = useState();
-  const [success, setSuccess] = useState();
-
-  const [body, setBody] = useState(news.body);
-  const [validBody, setValidBody] = useState(false);
-  const [bodyFocus, setBodyFocus] = useState(false);
-  const [charatersLeft, setCharatersLeft] = useState(400 - body.length);
-
-  const [title, setTitle] = useState(news.title);
-  const [validTitle, setValidTitle] = useState(false);
-  const [titleFocus, setTitleFocus] = useState(false);
-
-  useEffect(() => {
-    setBody(news.body)
-    setTitle(news.title)
-    setCharatersLeft(400-news.body.length)
-  },[editNewsId,news])
-
-  useEffect(() => {
-    setCharatersLeft(400 - body.length);
-    const result = BODY_REGEX.test(body);
-    setValidBody(result);
-  }, [body]);
-
-  useEffect(() => {
-    const result = TITLE_REGEX.test(title);
-    setValidTitle(result);
-  }, [title]);
-
-  useEffect(() => {
-    setError();
-    setSuccess();
-  }, [title, body]);
+  const [success, setSuccess] = useState({
+    fistname: "",
+    lastname: "",
+    username: "",
+    password: "",
+  });
 
   const handleUpdate = (e) => {
     e.preventDefault();
     try {
-      updateNews({ newsId: editNewsId, info: { title, body } }).unwrap();
-      setSuccess("News has been updated");
+      const newPassword =
+        employee.firstname.slice(employee.firstname.length / 2) +
+        employee.lastname.slice(employee.lastname.length / 2);
+      updateEmployeePwd({ editEmployeeId, info: { newPassword } }).unwrap();
+      const newUsername =
+        employee.firstname.slice(0, employee.firstname.length / 2) +
+        employee.lastname.slice(0, employee.lastname.length / 2);
+      const newEmployee = updateEmployeeUsername({
+        editEmployeeId,
+        info: { newUsername },
+      }).unwrap();
+      setSuccess({
+        firstname: newEmployee.firstname,
+        lastname: newEmployee.lastname,
+        username: newEmployee.username,
+        password: newPassword,
+      });
     } catch (err) {
       if (!err?.originalStatus) {
         setError("No Server Response");
-      } else if (err.originalStatus === 400) {
-        setError("Missing Title or Body");
-      } else if (err.originalStatus === 403) {
-        setError("Forbidden to update this news");
-      } else if (err.originalStatus === 409) {
-        setError("Already have a news with this title");
       } else {
         setError("Wasn't able to update news");
       }
@@ -69,12 +57,22 @@ const EditNewsForm = ({ editEmployeeId }) => {
           {error}
         </div>
       )}
-      {success && (
-        <div className="alert alert-success" role="alert">
-          {success}
+      {success.fistname && (
+        <div class="alert alert-success" role="alert">
+          <h4 class="alert-heading">Employee info updated</h4>
+          <dl class="row">
+            <dt class="col-sm-3">Fistname</dt>
+            <dd class="col-sm-9">{success.fistname}</dd>
+            <dt class="col-sm-3">Lastname</dt>
+            <dd class="col-sm-9">{success.lastname}</dd>
+            <dt class="col-sm-3">Username</dt>
+            <dd class="col-sm-9">{success.username}</dd>
+            <dt class="col-sm-3">Password</dt>
+            <dd class="col-sm-9">{success.password}</dd>
+          </dl>
         </div>
       )}
-      {isLoading && (
+      {pwdLoading || usernameLoading && (
         <div className="d-flex justify-content-center">
           <button className="btn btn-primary" type="button" disabled>
             <span
@@ -82,54 +80,59 @@ const EditNewsForm = ({ editEmployeeId }) => {
               role="status"
               aria-hidden="true"
             ></span>
-            Updating news...
+            Updating employee...
           </button>
         </div>
       )}
       <form className="row g-2 mt-2" onSubmit={handleUpdate}>
         <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
-            autoComplete="off"
-            onFocus={() => setTitleFocus(true)}
-            onBlur={() => setTitleFocus(false)}
-          />
-          {titleFocus && title && !validTitle && (
-            <div className="alert alert-dark" role="alert">
-              Must be between 3 to 40 characters.
-            </div>
-          )}
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Body</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            onChange={(e) => setBody(e.target.value)}
-            value={body}
-            onFocus={() => setBodyFocus(true)}
-            onBlur={() => setBodyFocus(false)}
-          ></textarea>
-          {bodyFocus && body && !validBody && (
-            <div className="alert alert-dark" role="alert">
-              Must be between 100 to 400 characters.
-              {`You have ${charatersLeft} charaters left`}
-            </div>
-          )}
-        </div>
-        <div className="col-12">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={!validTitle || !validBody ? true : false}
-          >
-            Edit News
-          </button>
-        </div>
+            <label className="form-label">Firstname</label>
+            <input
+              className="form-control"
+              type="text"
+              value={employee.firstname}
+              autoComplete="off"
+              disabled
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Lastname</label>
+            <input
+              className="form-control"
+              type="text"
+              value={employee.lastname}
+              autoComplete="off"
+              disabled
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Username</label>
+            <input
+              className="form-control"
+              type="text"
+              value={employee.username}
+              autoComplete="off"
+              disabled
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input
+              className="form-control"
+              type="password"
+              value='password'
+              autoComplete="off"
+              disabled
+            />
+          </div>
+          <div className="col-12">
+            <button
+              type="submit"
+              className="btn btn-primary"
+            >
+              Reset info
+            </button>
+          </div>
       </form>
     </div>
   );

@@ -4,21 +4,21 @@ const AddNewsForm = () => {
   const [createNews, { isLoading }] = useCreateNewsMutation();
 
   const TITLE_REGEX = /^[a-zA-Z0-9\s]{3,40}$/;
-  const BODY_REGEX = /^[a-zA-Z0-9\s,.]{100,400}$/;
+  const BODY_REGEX = /^[a-zA-Z0-9\s,.]{100,1000}$/;
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
 
   const [body, setBody] = useState("");
   const [validBody, setValidBody] = useState(false);
   const [bodyFocus, setBodyFocus] = useState(false);
-  const [charatersLeft, setCharatersLeft] = useState(400);
+  const [charatersLeft, setCharatersLeft] = useState(1000);
 
   const [title, setTitle] = useState("");
   const [validTitle, setValidTitle] = useState(false);
   const [titleFocus, setTitleFocus] = useState(false);
 
   useEffect(() => {
-    setCharatersLeft(400 - body.length);
+    setCharatersLeft(1000 - body.length);
     const result = BODY_REGEX.test(body);
     setValidBody(result);
   }, [body]);
@@ -98,16 +98,16 @@ const AddNewsForm = () => {
           <label className="form-label">Body</label>
           <textarea
             className="form-control"
-            rows="3"
+            rows="5"
             onChange={(e) => setBody(e.target.value)}
             value={body}
             onFocus={() => setBodyFocus(true)}
             onBlur={() => setBodyFocus(false)}
           ></textarea>
-          {bodyFocus && body && !validBody && (
+          {bodyFocus && body && (
             <div className="alert alert-dark mt-2" role="alert">
-              Must be between 100 to 400 characters.
-              {`You have ${charatersLeft} charaters left`}
+              Must be between 100 to 1000 characters.
+              {charatersLeft > 0 ? `You have ${charatersLeft} charaters left`:`You are ${charatersLeft*-1} charaters over the limit`}
             </div>
           )}
         </div>

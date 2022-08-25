@@ -268,9 +268,11 @@ const deleteNews = async (req, res) => {
     news.employee.equals(req.userId)
   ) {
     const employee = await Employee.findById(news.employee);
-    const index = employee.news.indexOf(news._id);
-    employee.news.splice(index, 1);
-    employee.save();
+    if(employee){
+      const index = employee.news.indexOf(news._id);
+      employee.news.splice(index, 1);
+      employee.save();
+    }
     const result = await News.deleteOne({ _id: req.target._id });
     return res.status(200).json({...result,_id:news._id});
   } else {

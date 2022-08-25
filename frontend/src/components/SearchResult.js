@@ -1,7 +1,7 @@
 import { useGetNewsSearchQuery } from "../features/news/newsApiSlice";
 import { format } from "date-fns";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-const SearchResult = ({ search }) => {
+const SearchResult = ({ search, setSearchFocus }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const {
@@ -27,16 +27,19 @@ const SearchResult = ({ search }) => {
         style={{
           position: "absolute",
           top: "5px",
-          zIndex: "3",
+          zIndex: "1",
           height: "500px",
         }}
       >
         {news.map((article) => {
           return (
-              <Link
-              to={`/news/${article._id}`}
+            <li
               className="list-group-item list-group-item-action"
               key={article._id}
+            >
+              <Link
+                to={`/news/${article._id}`}
+                style={{ textDecoration: "none", color: "black" }}
               >
                 <div className="d-flex w-100 justify-content-between">
                   <h5 className="mb-1">{article.title}</h5>
@@ -45,6 +48,7 @@ const SearchResult = ({ search }) => {
                 <p className="mb-1">{`${article.body.substring(0, 50)}...`}</p>
                 <small>{article.username}</small>
               </Link>
+            </li>
           );
         })}
       </div>

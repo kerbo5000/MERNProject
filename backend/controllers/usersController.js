@@ -67,7 +67,8 @@ const updateUserPwd = async (req, res) => {
     }
     const match = await bcrypt.compare(req.body.oldPassword, user.password);
     if (match) {
-      user.password = req.body.newPassword;
+      const hashed = await bcrypt.hash(req.body.newPassword, 10)
+      user.password = hashed;
       const result = await user.save();
       res.status(200).json({
         firstname: result.firstname,
@@ -83,11 +84,30 @@ const updateUserPwd = async (req, res) => {
   }
 };
 
+const updateUserUsername = async (req, res) => {
+  const user = req.target;
+  if (req.roles.includes(ROLES_LIST.Admin) || user._id.equals(req.userId)) {
+    if (!req?.body?.newUsername) {
+      return res.status(400).json({ message: "New username required" });
+    }
+    let newUsername = req.body.newUsername;
+    const duplicate = await User.findOne({ username: newUsername });
+    if (duplicate) {
+      return res.status(409).json({ message: "username is taken" });
+
+    }
+    user.username = newUsername;
+    const result = await user.save();
+    return res.status(200).json(result);
+  } else {
+    return res.sendStatus(403);
+  }
+};
 const deleteUser = async (req, res) => {
   const user = req.target;
   if (req.roles.includes(ROLES_LIST.Admin) || user.username == req.user) {
     const result = await User.deleteOne({ _id: req.target._id });
-    res.status(200).json({...result,_id:user._id});
+    res.status(200).json({ ...result, _id: user._id });
   } else {
     return res.sendStatus(403);
   }
@@ -98,4 +118,5 @@ module.exports = {
   getUser,
   updateUserPwd,
   deleteUser,
+  updateUserUsername,
 };

@@ -78,7 +78,7 @@ const createNewEmployee = async (req, res) => {
       username,
       password: hashPwd,
     });
-    return res.status(201).json(employee);
+    return res.status(201).json({lastname,firstname,username,password});
   } catch (err) {
     console.error(err);
   }
@@ -128,10 +128,14 @@ const updateEmployeeUsername = async (req, res) => {
     if (!req?.body?.newUsername) {
       return res.status(400).json({ message: "New username required" });
     }
-    const newUsername = req.body.newUsername;
+    let newUsername = req.body.newUsername;
     const duplicate = await Employee.findOne({ username: newUsername });
-    if (duplicate) {
+    if (duplicate && employee._id.equals(req.userId)) {
       return res.status(409).json({ message: "username is taken" });
+    }else if(duplicate){
+      while (await Employee.findOne({ username })) {
+        newUsername += Math.floor(Math.random() * 10);
+      }
     }
     const news = await News.find({ employee: employee._id });
     const usernameChange = async () => {

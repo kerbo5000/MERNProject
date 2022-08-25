@@ -4,10 +4,10 @@ import EmployeesRow from "./EmployeesRow";
 import { useSelector } from "react-redux";
 import { useGetAllEmployeesQuery } from "../features/employees/employeesApiSlice";
 import { selectAllEmployees } from "../features/employees/employeesApiSlice";
-import SearchBar from "./SearchBar";
-import AddEmployeeForm from "./AddEmployeesForm";
+import SearchBarEmployees from "./SearchBarEmployees";
+import AddEmployeeForm from "./AddEmployeeForm";
 import Pagination from "./Pagination";
-import EditEmployeeForm from "./EditEmployeesForm";
+import EditEmployeeForm from "./EditEmployeeForm";
 const EmployeesTable = () => {
   const { isloading, isSuccess, isError, error } = useGetAllEmployeesQuery();
   const employees = useSelector(selectAllEmployees);
@@ -40,7 +40,7 @@ const EmployeesTable = () => {
       );
       setEmployeesOrder(result);
     }
-  }, [order, news]);
+  }, [order, employees]);
 
   useEffect(() => {
     const result = employeesOrder.filter(
@@ -51,8 +51,8 @@ const EmployeesTable = () => {
     } else {
       setNextPage(false);
     }
-    setNewsDisplay(result);
-  }, [pageNum, order, employeessOrder]);
+    setEmployeesDisplay(result);
+  }, [pageNum, order, employeesOrder]);
 
   useEffect(() => {
     setOrder("default");
@@ -77,7 +77,7 @@ const EmployeesTable = () => {
         <li className="nav-item">
           <a
             className={`nav-link ${tab === "edit" ? "active" : ""} ${
-              !editNewsId ? "disabled" : ""
+              !editEmployeeId ? "disabled" : ""
             }`}
           >
             {" "}
@@ -90,7 +90,7 @@ const EmployeesTable = () => {
       ) : (
         <EditEmployeeForm editEmployeeId={editEmployeeId} />
       )}
-      <SearchBar news={news} setEmployeesOrder={setEmployeesOrder} />
+      <SearchBarEmployees employees={employees} setEmployeesOrder={setEmployeesOrder} />
       <table className="table">
         <thead>
           <tr>
@@ -109,7 +109,7 @@ const EmployeesTable = () => {
                   <input
                     type="checkbox"
                     className="btn-check"
-                    id="btnNewssInc"
+                    id="btnNewsInc"
                     autoComplete="off"
                     checked={order === "newsInc" ? true : false}
                     onChange={() =>
@@ -128,7 +128,7 @@ const EmployeesTable = () => {
                   <input
                     type="checkbox"
                     className="btn-check"
-                    id="btNewssDec"
+                    id="btnNewsDec"
                     autoComplete="off"
                     checked={order === "newsDec" ? true : false}
                     onChange={() =>
@@ -198,18 +198,20 @@ const EmployeesTable = () => {
           </tr>
         </thead>
         <tbody>
-          {newsDisplay.length ?
-            newsDisplay.map((employee) => (
+          {employeesDisplay.length ?
+            employeesDisplay.map((employee) => {
+              console.log(employee)
+              return (
               <EmployeesRow
                 {...employee}
                 key={employee._id}
                 setEditEmployeeId={setEditEmployeeId}
                 setTab={setTab}
               />
-            )) : null}
+            )}) : null}
         </tbody>
       </table>
-      {!newsDisplay.length && (
+      {!employeesDisplay.length && (
         <div className="alert alert-dark" role="alert">
           No news to display
         </div>

@@ -17,6 +17,7 @@ const EmployeesRow = ({
     setEditEmployeeId(_id);
     setTab("edit");
   };
+  console.log(createdAt)
   return (
     <tr>
       <th scope="row">{_id}</th>
@@ -32,7 +33,7 @@ const EmployeesRow = ({
             <Link to={`/news/employee/${_id}`} style={{ textDecoration: "none", color: "black" }}>
               <li><button className="dropdown-item read" type="button" >Employee page</button></li>
             </Link>
-            <li><button className="dropdown-item edit" type="button" onClick={editEmployee}>Edit info</button></li>
+            <li><button className="dropdown-item edit" type="button" onClick={editEmployee}>Reset info</button></li>
             <li><button className="dropdown-item delete" type="button" onClick={() => deleteEmployee(_id)}>Delete employee</button></li>
           </ul>
         </div>

@@ -20,19 +20,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url:"/logout",
         method: 'POST'
       })
-    }),
-    updatePwd: builder.mutation({
-      query: ({ userID, oldPassword, newPassword }) => ({
-        url: `/users/${userID}`,
-        method: "PATCH",
-        body: { oldPassword, newPassword },
-      }),
-    }),
+    })
   }),
 });
 export const {
   useLoginMutation,
   useRegisterMutation,
   useLogoutMutation,
-  useUpdatePwdMutation,
 } = authApiSlice;

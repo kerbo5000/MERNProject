@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link,Outlet } from "react-router-dom";
 import Card from "react-bootstrap/Card";
+import { useState } from "react";
 // import Users from './Users'
 
 const Admin = () => {
@@ -10,7 +11,7 @@ const Admin = () => {
       <ul className="nav nav-tabs">
         <li className="nav-item">
           <Link
-            to="/editor/news"
+            to="/admin/employees"
             style={{ textDecoration: "none" }}
             className={`nav-link ${tab === "employees" ? "active" : ""}`}
             onClick={() => setTab("employees")}

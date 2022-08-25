@@ -8,14 +8,14 @@ const EditNewsForm = ({ editNewsId }) => {
   const news = useSelector((state) => selectNewsById(state, editNewsId));
 
   const TITLE_REGEX = /^[a-zA-Z0-9-_\s]{3,40}$/;
-  const BODY_REGEX = /^[a-zA-Z][a-zA-Z0-9,.\s]{100,400}$/;
+  const BODY_REGEX = /^[a-zA-Z][a-zA-Z0-9,.\s]{100,1000}$/;
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
 
   const [body, setBody] = useState(news.body);
   const [validBody, setValidBody] = useState(false);
   const [bodyFocus, setBodyFocus] = useState(false);
-  const [charatersLeft, setCharatersLeft] = useState(400 - body.length);
+  const [charatersLeft, setCharatersLeft] = useState(1000 - body.length);
 
   const [title, setTitle] = useState(news.title);
   const [validTitle, setValidTitle] = useState(false);
@@ -24,11 +24,11 @@ const EditNewsForm = ({ editNewsId }) => {
   useEffect(() => {
     setBody(news.body)
     setTitle(news.title)
-    setCharatersLeft(400-news.body.length)
+    setCharatersLeft(1000-news.body.length)
   },[editNewsId,news])
 
   useEffect(() => {
-    setCharatersLeft(400 - body.length);
+    setCharatersLeft(1000 - body.length);
     const result = BODY_REGEX.test(body);
     setValidBody(result);
   }, [body]);
@@ -99,7 +99,7 @@ const EditNewsForm = ({ editNewsId }) => {
             onBlur={() => setTitleFocus(false)}
           />
           {titleFocus && title && !validTitle && (
-            <div className="alert alert-dark" role="alert">
+            <div className="alert alert-dark mt-2" role="alert">
               Must be between 3 to 40 characters.
             </div>
           )}
@@ -108,16 +108,16 @@ const EditNewsForm = ({ editNewsId }) => {
           <label className="form-label">Body</label>
           <textarea
             className="form-control"
-            rows="3"
+            rows="5"
             onChange={(e) => setBody(e.target.value)}
             value={body}
             onFocus={() => setBodyFocus(true)}
             onBlur={() => setBodyFocus(false)}
           ></textarea>
-          {bodyFocus && body && !validBody && (
-            <div className="alert alert-dark" role="alert">
-              Must be between 100 to 400 characters.
-              {`You have ${charatersLeft} charaters left`}
+          {bodyFocus && body && (
+            <div className="alert alert-dark mt-2" role="alert">
+              Must be between 100 to 1000 characters.
+              {charatersLeft > 0 ? `You have ${charatersLeft} charaters left`:`You are ${charatersLeft*-1} charaters over the limit`}
             </div>
           )}
         </div>

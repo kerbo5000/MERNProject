@@ -5,6 +5,7 @@ const {
   getUser,
   updateUserPwd,
   deleteUser,
+  updateUserUsername,
 } = require("../../controllers/usersController.js");
 const ROLES_LIST = require("../../config/roles_list");
 const verifyRoles = require("../../middleware/verifyRoles");
@@ -15,15 +16,25 @@ router.route("/").get(getUsers);
 router
   .route("/:userId")
   .get(verifyId("user"), getUser)
-  .patch(
-    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User),
-    verifyId("user"),
-    updateUserPwd
-  )
   .delete(
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User),
     verifyId("user"),
     deleteUser
   );
 
+router
+  .route("/:userId/password")
+  .patch(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User),
+    verifyId("user"),
+    updateUserPwd
+  );
+
+router
+.route("/:userId/username")
+.patch(
+  verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User),
+  verifyId("user"),
+  updateUserUsername
+);
 module.exports = router;

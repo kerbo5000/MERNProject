@@ -8,8 +8,15 @@ const User = () => {
   const [searchFocus, setSearchFocus] = useState(false);
   const handleSubmit = (e) => e.preventDefault();
 
+  const closeSearchResult = (e) => {
+    if (!(e.target.classList.contains('list-group-item') || e.target.classList.contains('form-control'))) {
+      setSearchFocus(false);
+    }
+  }
+  
+
   return (
-    <div className="card-body">
+    <div className="card-body" onClick={closeSearchResult}>
       <h5 className="card-title">Home</h5>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -20,7 +27,6 @@ const User = () => {
             onChange={(e) => setSearch(e.target.value)}
             value={search}
             onFocus={() => setSearchFocus(true)}
-            onBlur={() => setSearchFocus(false)}
           />
         </div>
       </form>

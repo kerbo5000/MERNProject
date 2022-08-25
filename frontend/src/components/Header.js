@@ -51,6 +51,11 @@ const Header = () => {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
+                  <Nav.Link as={Link} to="/settings" eventKey="lsettings">
+                    Settings
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
                   <Nav.Link onClick={signOut} eventKey="logout">
                     Logout
                   </Nav.Link>

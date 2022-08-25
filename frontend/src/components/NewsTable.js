@@ -2,14 +2,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NewsRow from "./NewsRow";
 import { useSelector } from "react-redux";
-import { useGetAllNewsQuery } from "../features/news/newsApiSlice";
 import { selectAllNews } from "../features/news/newsApiSlice";
 import SearchBar from "./SearchBar";
 import AddNewsForm from "./AddNewsForm";
 import Pagination from "./Pagination";
 import EditNewsForm from "./EditNewsForm";
 const NewsTable = () => {
-  const { isloading, isSuccess, isError, error } = useGetAllNewsQuery();
   const news = useSelector(selectAllNews);
   const [newsOrder, setNewsOrder] = useState([]);
   const [order, setOrder] = useState("default");
