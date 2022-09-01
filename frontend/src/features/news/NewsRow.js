@@ -1,8 +1,8 @@
 import { format } from "date-fns";
-import { selectCurrentUserId } from "../features/auth/authSlice";
+import { selectCurrentUserId } from "../auth/authSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useDeleteNewsMutation } from "../features/news/newsApiSlice";
+import { useDeleteNewsMutation } from "./newsApiSlice";
 const NewsRow = ({
   _id,
   username,

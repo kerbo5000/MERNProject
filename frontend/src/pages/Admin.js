@@ -21,7 +21,7 @@ const Admin = () => {
         </li>
         <li className="nav-item">
           <Link
-            to="/editor/notifications"
+            to="/admin/users"
             style={{ textDecoration: "none" }}
             className={`nav-link ${tab === "users" ? "active" : ""}`}
             onClick={() => setTab("users")}

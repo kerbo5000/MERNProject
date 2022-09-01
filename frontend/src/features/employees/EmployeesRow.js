@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import { useDeleteEmployeeMutation } from "../features/employees/employeesApiSlice";
+import { useDeleteEmployeeMutation } from "./employeesApiSlice";
 const EmployeesRow = ({
   _id,
   username,
@@ -17,7 +17,6 @@ const EmployeesRow = ({
     setEditEmployeeId(_id);
     setTab("edit");
   };
-  console.log(createdAt)
   return (
     <tr>
       <th scope="row">{_id}</th>

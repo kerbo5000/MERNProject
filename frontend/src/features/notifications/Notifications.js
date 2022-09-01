@@ -2,9 +2,9 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
   useGetEmployeeNotificationsQuery,
   useDeleteEmployeeNotificationMutation,
-} from "../features/notifications/notificationApiSlice";
+} from "./notificationApiSlice";
 import { useSelector } from "react-redux";
-import { selectCurrentUserId } from "../features/auth/authSlice";
+import { selectCurrentUserId } from "../auth/authSlice";
 const Notifications = () => {
   const location = useLocation();
   const navigate = useNavigate();

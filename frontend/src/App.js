@@ -3,12 +3,12 @@ import Login from "./pages/Login";
 import User from "./pages/User";
 import Layout from "./pages/Layout";
 import Editor from "./pages/Editor";
-import Notifications from './components/Notifications'
+import Notifications from './features/notifications/Notifications'
 import Admin from './pages/Admin'
 import Missing from "./pages/Missing";
-// import UsersTable from './components/UsersTable'
-import NewsTable from "./components/NewsTable";
-import EmployeesTable from './components/EmployeesTable'
+import UsersTable from './features/users/UsersTable'
+import NewsTable from "./features/news/NewsTable";
+import EmployeesTable from './features/employees/EmployeesTable'
 import SingleNews from "./pages/SingleNews";
 import EmployeePage from "./pages/EmployeePage";
 import Favorites from "./components/Favorites";
@@ -42,7 +42,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route element={<RequiredAuth allowedRoles={[1984]} />}>
+        <Route element={<RequiredAuth allowedRoles={[1984,5150]} />}>
           <Route path="editor" element={<Editor />}>
             <Route path="news" element={<NewsTable />} />
             <Route path='notifications' element={<Notifications />}/>
@@ -51,7 +51,7 @@ function App() {
         
         <Route element={<RequiredAuth allowedRoles={[5150]}/>}>
           <Route path='admin' element={<Admin />}>
-            {/* <Route path="users" element={<UsersTable />} /> */}
+            <Route path="users" element={<UsersTable />} />
             <Route path="employees" element={<EmployeesTable />} /> 
           </Route>
         </Route>

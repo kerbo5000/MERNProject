@@ -247,7 +247,7 @@ const updateNews = async (req, res) => {
         title: req.body.title,
         employee: req.userId,
       });
-      if (duplicate.length) {
+      if (duplicate.length && !duplicate[0]._id.equals(news._id)) {
         return res
           .status(409)
           .json({ message: "You already have a article with that title" });

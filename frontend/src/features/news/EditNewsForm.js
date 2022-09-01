@@ -1,6 +1,6 @@
-import { selectNewsById } from "../features/news/newsApiSlice";
+import { selectNewsById } from "./newsApiSlice";
 import { useSelector } from "react-redux";
-import { useUpdateNewsMutation } from "../features/news/newsApiSlice";
+import { useUpdateNewsMutation } from "./newsApiSlice";
 import { useState, useEffect } from "react";
 const EditNewsForm = ({ editNewsId }) => {
   const [updateNews, { isLoading }] = useUpdateNewsMutation();
@@ -9,8 +9,8 @@ const EditNewsForm = ({ editNewsId }) => {
 
   const TITLE_REGEX = /^[a-zA-Z0-9-_\s]{3,40}$/;
   const BODY_REGEX = /^[a-zA-Z][a-zA-Z0-9,.\s]{100,1000}$/;
-  const [error, setError] = useState();
-  const [success, setSuccess] = useState();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const [body, setBody] = useState(news.body);
   const [validBody, setValidBody] = useState(false);
@@ -39,23 +39,22 @@ const EditNewsForm = ({ editNewsId }) => {
   }, [title]);
 
   useEffect(() => {
-    setError();
-    setSuccess();
+    setError('');
   }, [title, body]);
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async(e) => {
     e.preventDefault();
     try {
-      updateNews({ newsId: editNewsId, info: { title, body } }).unwrap();
+      await updateNews({ newsId: editNewsId, info: { title, body } }).unwrap();
       setSuccess("News has been updated");
     } catch (err) {
-      if (!err?.originalStatus) {
+      if (!err?.status) {
         setError("No Server Response");
-      } else if (err.originalStatus === 400) {
+      } else if (err.status === 400) {
         setError("Missing Title or Body");
       } else if (err.originalStatus === 403) {
         setError("Forbidden to update this news");
-      } else if (err.originalStatus === 409) {
+      } else if (err.status === 409) {
         setError("Already have a news with this title");
       } else {
         setError("Wasn't able to update news");

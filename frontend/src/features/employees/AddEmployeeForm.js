@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useCreateEmployeeMutation } from "../features/employees/employeesApiSlice";
+import { useCreateEmployeeMutation } from "./employeesApiSlice";
 const AddNewsForm = () => {
   const [createEmployee, { isLoading }] = useCreateEmployeeMutation();
 
-  const [error, setError] = useState();
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState({
-    fistname: "",
+    firstname: "",
     lastname: "",
     username: "",
     password: "",
@@ -15,17 +15,16 @@ const AddNewsForm = () => {
   const [lastname, setLastname] = useState("");
 
   useEffect(() => {
-    setError();
-    setSuccess();
+    setError('');
   }, [firstname, lastname]);
 
-  const handleAdd = (e) => {
+  const handleAdd = async(e) => {
     e.preventDefault();
     try {
-      const newEmployee = createEmployee({ firstname,lastname}).unwrap();
-      setSuccess(newEmployee);
-      setFirstname();
-      setLastname();
+      const newEmployee = await createEmployee({ firstname,lastname}).unwrap();
+      setSuccess({firstname,lastname,username:newEmployee.username,password:newEmployee.password});
+      setFirstname('');
+      setLastname('');
     } catch (err) {
       if (!err?.originalStatus) {
         setError("No Server Response");
@@ -38,23 +37,27 @@ const AddNewsForm = () => {
   };
   return (
     <div className="card-body">
+      {console.log(success)}
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
       )}
-      {success && (
-        <div className="alert alert-success" role="alert">
+      {success?.firstname && (
+        <div className="alert alert-success w-50" role="alert">
           <h4 className="alert-heading">New employee has been added</h4>
           <dl className="row">
             <dt className="col-sm-3">Fistname</dt>
-            <dd className="col-sm-9">{success.fistname}</dd>
+            <dd className="col-sm-2">{success.firstname}</dd>
+            <div className="w-100"></div>
             <dt className="col-sm-3">Lastname</dt>
-            <dd className="col-sm-9">{success.lastname}</dd>
+            <dd className="col-sm-2">{success.lastname}</dd>
+            <div className="w-100"></div>
             <dt className="col-sm-3">Username</dt>
-            <dd className="col-sm-9">{success.username}</dd>
+            <dd className="col-sm-2">{success.username}</dd>
+            <div className="w-100"></div>
             <dt className="col-sm-3">Password</dt>
-            <dd className="col-sm-9">{success.password}</dd>
+            <dd className="col-sm-2">{success.password}</dd>
           </dl>
         </div>
       )}

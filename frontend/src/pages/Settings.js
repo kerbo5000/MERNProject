@@ -73,7 +73,7 @@ const Settings = () => {
       if(roles.includes(2001)){
         await updateUserUsername({userId,info:{newUsername}}).unwrap()
       }else{
-        await updateEmployeeUsername({userId,info:{newUsername}}).unwrap()
+        await updateEmployeeUsername({employeeId:userId,info:{newUsername}}).unwrap()
       }
       setUsernameSuccess('Your username has been changed')
       setNewUsername('')
@@ -96,7 +96,7 @@ const Settings = () => {
       if(roles.includes(2001)){
         await updateUserPwd({userId,info:{newPassword:newPwd,oldPassword:oldPwd}}).unwrap()
       }else{
-        await updateEmployeePwd({userId,info:{newPassword:newPwd,oldPassword:oldPwd}}).unwrap()
+        await updateEmployeePwd({employeeId:userId,info:{newPassword:newPwd,oldPassword:oldPwd}}).unwrap()
       }
       setPwdSuccess('Your password has been changed')
       setOldPwd('')

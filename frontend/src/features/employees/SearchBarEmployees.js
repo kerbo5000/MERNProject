@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
-const SearchBar = ({ setNewsOrder, news }) => {
+const SearchBarEmployees = ({ setEmployeesOrder, employees }) => {
   const [search, setSearch] = useState('');
   const handleSubmit = (e) => {
     e.preventDefault();
   };
   useEffect(() => {
     if (!search) {
-      return setNewsOrder(news);
+      return setEmployeesOrder(employees);
     }
-    const result = news.filter(
-      (article) =>
-        article.title.includes(search) || article.username.includes(search) || article._id.includes(search)
+    const result = employees.filter(
+      (employee) =>
+        employee.username.includes(search) || employee.firstnsme.includes(search) || employee.lastname.includes(search) || employee._id.includes(search)
     );
-    setNewsOrder(result);
+    setEmployeesOrder(result);
   }, [search]);
   return (
     <form onSubmit={handleSubmit}>
@@ -24,11 +24,11 @@ const SearchBar = ({ setNewsOrder, news }) => {
           type="text"
           onChange={(e) => setSearch(e.target.value)}
           value={search}
-          placeholder="title, username, id"
+          placeholder="firstname,lastname, username, id"
         />
       </div>
     </form>
   );
 };
 
-export default SearchBar;
+export default SearchBarEmployees;

@@ -46,7 +46,7 @@ const Header = () => {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link as={Link} to="/admin" eventKey="admin">
+                  <Nav.Link as={Link} to="/admin/employees" eventKey="admin">
                     Admin
                   </Nav.Link>
                 </Nav.Item>

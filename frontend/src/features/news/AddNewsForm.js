@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
-import { useCreateNewsMutation } from "../features/news/newsApiSlice";
+import { useCreateNewsMutation } from "./newsApiSlice";
 const AddNewsForm = () => {
   const [createNews, { isLoading }] = useCreateNewsMutation();
 
   const TITLE_REGEX = /^[a-zA-Z0-9\s]{3,40}$/;
   const BODY_REGEX = /^[a-zA-Z0-9\s,.]{100,1000}$/;
-  const [error, setError] = useState();
-  const [success, setSuccess] = useState();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState('');
   const [validBody, setValidBody] = useState(false);
   const [bodyFocus, setBodyFocus] = useState(false);
   const [charatersLeft, setCharatersLeft] = useState(1000);
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [validTitle, setValidTitle] = useState(false);
   const [titleFocus, setTitleFocus] = useState(false);
 
@@ -29,17 +29,16 @@ const AddNewsForm = () => {
   }, [title]);
 
   useEffect(() => {
-    setError();
-    setSuccess();
+    setError('');
   }, [title, body]);
 
-  const handleAdd = (e) => {
+  const handleAdd = async(e) => {
     e.preventDefault();
     try {
-      createNews({ title, body }).unwrap();
+      await createNews({ title, body }).unwrap();
       setSuccess("News has been added");
-      setTitle();
-      setBody();
+      setTitle('');
+      setBody('');
     } catch (err) {
       if (!err?.originalStatus) {
         setError("No Server Response");

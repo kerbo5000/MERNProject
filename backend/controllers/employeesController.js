@@ -78,9 +78,9 @@ const createNewEmployee = async (req, res) => {
       username,
       password: hashPwd,
     });
-    return res.status(201).json({lastname,firstname,username,password});
+    return res.status(201).json({_id:employee._id,firstname,lastname,username,password});
   } catch (err) {
-    console.error(err);
+    return res.status(400).json({ message: err.message });
   }
 };
 
@@ -133,7 +133,7 @@ const updateEmployeeUsername = async (req, res) => {
     if (duplicate && employee._id.equals(req.userId)) {
       return res.status(409).json({ message: "username is taken" });
     }else if(duplicate){
-      while (await Employee.findOne({ username })) {
+      while (await Employee.findOne({ username:newUsername })) {
         newUsername += Math.floor(Math.random() * 10);
       }
     }

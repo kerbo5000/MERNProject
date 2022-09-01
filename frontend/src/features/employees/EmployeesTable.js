@@ -1,61 +1,63 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import NewsRow from "./NewsRow";
+import EmployeesRow from "./EmployeesRow";
 import { useSelector } from "react-redux";
-import { selectAllNews } from "../features/news/newsApiSlice";
-import SearchBar from "./SearchBar";
-import AddNewsForm from "./AddNewsForm";
-import Pagination from "./Pagination";
-import EditNewsForm from "./EditNewsForm";
-const NewsTable = () => {
-  const news = useSelector(selectAllNews);
-  const [newsOrder, setNewsOrder] = useState([]);
+import { useGetAllEmployeesQuery } from "./employeesApiSlice";
+import { selectAllEmployees } from "./employeesApiSlice";
+import SearchBarEmployees from "./SearchBarEmployees";
+import AddEmployeeForm from "./AddEmployeeForm";
+import Pagination from "../../components/Pagination";
+import EditEmployeeForm from "./EditEmployeeForm";
+const EmployeesTable = () => {
+  const { isloading, isSuccess, isError, error } = useGetAllEmployeesQuery();
+  const employees = useSelector(selectAllEmployees);
+  const [employeesOrder, setEmployeesOrder] = useState([]);
   const [order, setOrder] = useState("default");
   const [pageNum, setPageNum] = useState(0);
-  const [newsDisplay, setNewsDisplay] = useState([]);
+  const [employeesDisplay, setEmployeesDisplay] = useState([]);
   const [nextPage, setNextPage] = useState(true);
-  const [editNewsId, setEditNewsId] = useState();
+  const [editEmployeeId, setEditEmployeeId] = useState();
   const [tab, setTab] = useState("add");
 
   useEffect(() => {
     setPageNum(0);
     if (order === "default") {
-      setNewsOrder(news);
-    } else if (order === "likesInc") {
-      const result = news.sort((a, b) => b.likes.length - a.likes.length);
-      setNewsOrder(result);
-    } else if (order === "likesDec") {
-      const result = news.sort((a, b) => a.likes.length - b.likes.length);
-      setNewsOrder(result);
+      setEmployeesOrder(employees);
+    } else if (order === "newsInc") {
+      const result = employees.sort((a, b) => b.news.length - a.news.length);
+      setEmployeesOrder(result);
+    } else if (order === "newsDec") {
+      const result = employees.sort((a, b) => a.news.length - b.news.length);
+      setEmployeesOrder(result);
     } else if (order === "dateRecent") {
-      const result = news.sort(
+      const result = employees.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
-      setNewsOrder(result);
+      setEmployeesOrder(result);
     } else if (order === "dateOld") {
-      const result = news.sort(
+      const result = employees.sort(
         (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
       );
-      setNewsOrder(result);
+      setEmployeesOrder(result);
     }
-  }, [order, news]);
+  }, [order, employees]);
 
   useEffect(() => {
-    const result = newsOrder.filter(
-      (article, index) => Math.floor(index / 5) == pageNum
+    const result = employeesOrder.filter(
+      (_ , index) => Math.floor(index / 5) == pageNum
     );
     if (result.length === 5) {
       setNextPage(true);
     } else {
       setNextPage(false);
     }
-    setNewsDisplay(result);
-  }, [pageNum, order, newsOrder]);
+    setEmployeesDisplay(result);
+  }, [pageNum, order, employeesOrder]);
 
   useEffect(() => {
     setOrder("default");
     if (tab != "edit") {
-      setEditNewsId();
+      setEditEmployeeId();
     }
   }, [tab]);
 
@@ -69,35 +71,36 @@ const NewsTable = () => {
             onClick={() => setTab("add")}
           >
             {" "}
-            Add news
+            Add employee
           </a>
         </li>
         <li className="nav-item">
           <a
             className={`nav-link ${tab === "edit" ? "active" : ""} ${
-              !editNewsId ? "disabled" : ""
+              !editEmployeeId ? "disabled" : ""
             }`}
           >
             {" "}
-            Edit News
+            Edit employee
           </a>
         </li>
       </ul>
       {tab === "add" ? (
-        <AddNewsForm />
+        <AddEmployeeForm />
       ) : (
-        <EditNewsForm editNewsId={editNewsId} />
+        <EditEmployeeForm editEmployeeId={editEmployeeId} />
       )}
-      <SearchBar news={news} setNewsOrder={setNewsOrder} />
+      <SearchBarEmployees employees={employees} setEmployeesOrder={setEmployeesOrder} />
       <table className="table">
         <thead>
           <tr>
             <th scope="col">id</th>
             <th scope="col">Username</th>
-            <th scope="col">Title</th>
+            <th scope="col">Full name</th>
+            <th scope="col">Role</th>
             <th scope="col">
               <div>
-                Likes
+                News
                 <div
                   className="btn-group btn-group-sm ps-2"
                   role="group"
@@ -106,18 +109,18 @@ const NewsTable = () => {
                   <input
                     type="checkbox"
                     className="btn-check"
-                    id="btnLikesInc"
+                    id="btnNewsInc"
                     autoComplete="off"
-                    checked={order === "likesInc" ? true : false}
+                    checked={order === "newsInc" ? true : false}
                     onChange={() =>
-                      order === "likesInc"
+                      order === "newsInc"
                         ? setOrder("default")
-                        : setOrder("likesInc")
+                        : setOrder("newsInc")
                     }
                   />
                   <label
                     className="btn btn-outline-primary"
-                    htmlFor="btnLikesInc"
+                    htmlFor="btnNewsInc"
                   >
                     ⥣
                   </label>
@@ -125,18 +128,18 @@ const NewsTable = () => {
                   <input
                     type="checkbox"
                     className="btn-check"
-                    id="btnLikesDec"
+                    id="btnNewsDec"
                     autoComplete="off"
-                    checked={order === "likesDec" ? true : false}
+                    checked={order === "newsDec" ? true : false}
                     onChange={() =>
-                      order === "likesDec"
+                      order === "newsDec"
                         ? setOrder("default")
-                        : setOrder("likesDec")
+                        : setOrder("newsDec")
                     }
                   />
                   <label
                     className="btn btn-outline-primary"
-                    htmlFor="btnLikesDec"
+                    htmlFor="btnNewsDec"
                   >
                     ⥥
                   </label>
@@ -195,20 +198,21 @@ const NewsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {newsDisplay.length ?
-            newsDisplay.map((article) => (
-              <NewsRow
-                {...article}
-                key={article._id}
-                setEditNewsId={setEditNewsId}
+          {employeesDisplay.length ?
+            employeesDisplay.map((employee) => {
+              return (
+              <EmployeesRow
+                {...employee}
+                key={employee._id}
+                setEditEmployeeId={setEditEmployeeId}
                 setTab={setTab}
               />
-            )) : null}
+            )}) : null}
         </tbody>
       </table>
-      {!newsDisplay.length && (
+      {!employeesDisplay.length && (
         <div className="alert alert-dark" role="alert">
-          No news to display
+          No employees to display
         </div>
       )}
       <Pagination
@@ -220,4 +224,4 @@ const NewsTable = () => {
   );
 };
 
-export default NewsTable;
+export default EmployeesTable;
