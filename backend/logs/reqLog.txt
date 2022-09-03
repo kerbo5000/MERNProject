@@ -18911,3 +18911,7 @@
 20220902	21:31:40	873bf495-6144-4e6f-a446-29eb23ad410b	POST	http://localhost:3500	/auth/user
 20220902	21:31:44	a542236f-7dfc-4ddf-8589-7f5b451de6ea	GET	undefined	/news?skip=0&limit=5
 20220902	21:31:48	f02bf71f-7c79-475d-ad8b-531908376029	GET	undefined	/news?skip=0&limit=5&liked=630a7868b3091785c5eba53a
+20220902	22:05:33	3fb460ad-24ca-4a3e-bc79-2108766f80ad	OPTIONS	http://localhost:3000	/auth/user
+20220902	22:05:33	663e1a11-85fc-42fc-89c3-8ddd4fe8271a	POST	http://localhost:3000	/auth/user
+20220902	22:05:33	98cf97bf-77ed-44e3-995d-a3ee41c0a296	OPTIONS	http://localhost:3000	/news?skip=0&limit=5
+20220902	22:05:33	bcb47740-4d3f-48a0-aea6-adf252b27787	GET	http://localhost:3000	/news?skip=0&limit=5
