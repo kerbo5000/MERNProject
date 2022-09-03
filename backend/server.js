@@ -27,15 +27,23 @@ app.use('/auth',require('./routes/auth'))
 app.use('/refresh',require('./routes/refresh'))
 app.use('/logout',require('./routes/logout'))
 
-app.use(verifyJWT)
-app.use('/employees',require('./routes/api/employees'))
-app.use('/news',require('./routes/api/news'))
-app.use('/users',require('./routes/api/users'))
+// app.use(verifyJWT)
+app.use('/employees',verifyJWT,require('./routes/api/employees'))
+app.use('/news',verifyJWT,require('./routes/api/news'))
+app.use('/users',verifyJWT,require('./routes/api/users'))
 
-app.all('*',(req,res) => {
-  res.status(404)
-  res.json({error:"404 not found"})
-})
+if(process.env.NODE_ENV == 'production'){
+  app.use(express.static(path.join(__dirname, '../frontend/build')))
+
+  app.get('*', (req,res) => res.sendFile(path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')))
+}else{
+  app.get('/', (req,res) => res.send('Please set to production') )
+}
+
+// app.all('*',(req,res) => {
+//   res.status(404)
+//   res.json({error:"404 not found"})
+// })
 
 app.use(errorHandler)
 moogoose.connection.once('open',() => {

@@ -30,7 +30,7 @@ const Header = () => {
     <Card.Header>
       <Navbar bg="light" expand="lg">
         <Container>
-          <Navbar.Brand>Blog</Navbar.Brand>
+          <Navbar.Brand>News Blog</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             {token ? (
