@@ -45,8 +45,7 @@ const Login = () => {
       setUser("");
       setPwd("");
       const redirect = endpoint === "user" ? "/user/newsfeed" : "/editor/news";
-      const from = location.state?.from?.pathname || redirect;
-      navigate(from, { replace: true });
+      navigate(redirect, { replace: true });
     } catch (err) {
       if (!err?.originalStatus) {
         setError("No Server Response");
