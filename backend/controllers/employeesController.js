@@ -78,7 +78,9 @@ const createNewEmployee = async (req, res) => {
       username,
       password: hashPwd,
     });
-    return res.status(201).json({_id:employee._id,firstname,lastname,username,password});
+    return res
+      .status(201)
+      .json({ _id: employee._id, firstname, lastname, username, password });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -93,7 +95,7 @@ const updateEmployeePwd = async (req, res) => {
     employee.password = await bcrypt.hash(req.body.newPassword, 10);
     const result = await employee.save();
     return res.status(200).json(result);
-  } else if (req.userId.equals(employee._id)) {
+  } else if (employee._id.equals(req.userId)) {
     if (!req?.body?.newPassword || !req?.body?.oldPassword) {
       return res.status(400).json({ message: "New and old password required" });
     }
@@ -132,8 +134,8 @@ const updateEmployeeUsername = async (req, res) => {
     const duplicate = await Employee.findOne({ username: newUsername });
     if (duplicate && employee._id.equals(req.userId)) {
       return res.status(409).json({ message: "username is taken" });
-    }else if(duplicate){
-      while (await Employee.findOne({ username:newUsername })) {
+    } else if (duplicate) {
+      while (await Employee.findOne({ username: newUsername })) {
         newUsername += Math.floor(Math.random() * 10);
       }
     }
@@ -159,7 +161,7 @@ async function asyncForEach(array, callback) {
 }
 const deleteEmployee = async (req, res) => {
   const result = await Employee.deleteOne({ _id: req.target._id });
-  return res.status(200).json({...result,_id:req.target._id});
+  return res.status(200).json({ ...result, _id: req.target._id });
 };
 
 const deleteNotification = async (req, res) => {
@@ -168,7 +170,7 @@ const deleteNotification = async (req, res) => {
     const index = employee.notifications.indexOf(req.params.notificationId);
     employee.notifications.splice(index, 1);
     const result = await employee.save();
-    return res.status(200).json({_id:req.params.notificationId});
+    return res.status(200).json({ _id: req.params.notificationId });
   } else {
     return res.snedStatus(403);
   }

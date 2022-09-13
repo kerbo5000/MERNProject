@@ -2,6 +2,7 @@ import React from "react";
 import {
   selectCurrentRoles,
   selectCurrentUserId,
+  selectCurrentUser,
 } from "../features/auth/authSlice";
 
 import {
@@ -15,14 +16,14 @@ import {
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 const Settings = () => {
+  const [updateEmployeePwd] = useUpdateEmployeePwdMutation();
+  const [updateEmployeeUsername] = useUpdateEmployeeUsernameMutation();
+  const [updateUserPwd] = useUpdateUserPwdMutation();
+  const [updateUserUsername] = useUpdateUserUsernameMutation();
 
-  const [updateEmployeePwd] = useUpdateEmployeePwdMutation()
-  const [updateEmployeeUsername] = useUpdateEmployeeUsernameMutation()
-  const [updateUserPwd] = useUpdateUserPwdMutation()
-  const [updateUserUsername] = useUpdateUserUsernameMutation()
-
-  const userId = useSelector(selectCurrentUserId)
-  const roles = useSelector(selectCurrentRoles)
+  const userId = useSelector(selectCurrentUserId);
+  const roles = useSelector(selectCurrentRoles);
+  const username = useSelector(selectCurrentUser);
 
   const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
   const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -67,17 +68,20 @@ const Settings = () => {
     setValidMatch(match);
   }, [newPwd, matchPwd]);
 
-  const changeUsername = async(e) => {
-    e.preventDefault()
-    try{
-      if(roles.includes(2001)){
-        await updateUserUsername({userId,info:{newUsername}}).unwrap()
-      }else{
-        await updateEmployeeUsername({employeeId:userId,info:{newUsername}}).unwrap()
+  const changeUsername = async (e) => {
+    e.preventDefault();
+    try {
+      if (roles.includes(2001)) {
+        await updateUserUsername({ userId, info: { newUsername } }).unwrap();
+      } else {
+        await updateEmployeeUsername({
+          employeeId: userId,
+          info: { newUsername },
+        }).unwrap();
       }
-      setUsernameSuccess('Your username has been changed')
-      setNewUsername('')
-    }catch (err){
+      setUsernameSuccess("Your username has been changed");
+      setNewUsername("");
+    } catch (err) {
       if (!err?.status) {
         setUsernameError("No Server Response");
       } else if (err.status === 400) {
@@ -88,21 +92,27 @@ const Settings = () => {
         setUsernameError("Change Failed");
       }
     }
-  }
+  };
 
-  const changePassword = async(e) => {
-    e.preventDefault()
-    try{
-      if(roles.includes(2001)){
-        await updateUserPwd({userId,info:{newPassword:newPwd,oldPassword:oldPwd}}).unwrap()
-      }else{
-        await updateEmployeePwd({employeeId:userId,info:{newPassword:newPwd,oldPassword:oldPwd}}).unwrap()
+  const changePassword = async (e) => {
+    e.preventDefault();
+    try {
+      if (roles.includes(2001)) {
+        await updateUserPwd({
+          userId,
+          info: { newPassword: newPwd, oldPassword: oldPwd },
+        }).unwrap();
+      } else {
+        await updateEmployeePwd({
+          employeeId: userId,
+          info: { newPassword: newPwd, oldPassword: oldPwd },
+        }).unwrap();
       }
-      setPwdSuccess('Your password has been changed')
-      setOldPwd('')
-      setNewPwd('')
-      setMatchPwd('')
-    }catch (err){
+      setPwdSuccess("Your password has been changed");
+      setOldPwd("");
+      setNewPwd("");
+      setMatchPwd("");
+    } catch (err) {
       if (!err?.status) {
         setPwdError("No Server Response");
       } else if (err.status === 400) {
@@ -113,7 +123,7 @@ const Settings = () => {
         setPwdError("Change Failed");
       }
     }
-  }
+  };
 
   return (
     <div className="card-body">
@@ -128,13 +138,16 @@ const Settings = () => {
           {usernameSuccess}
         </div>
       )}
-      <form onSubmit={changeUsername} className='mb-2' >
+      {username.includes("default") && (
+        <div className="alert alert-danger" role="alert">
+          Not allowed to modify default accounts
+        </div>
+      )}
+      <form onSubmit={changeUsername} className="mb-2">
         <fieldset>
           <legend className="">Change username</legend>
           <div className="mb-3">
-            <label className="form-label">
-              New username
-            </label>
+            <label className="form-label">New username</label>
             <input
               type="text"
               className="form-control"
@@ -150,7 +163,11 @@ const Settings = () => {
               underscores, hyphens allowed.
             </div>
           )}
-          <button type="submit" className="btn btn-primary" disabled={!newUsername ? true : false}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={!newUsername ? true : false}
+          >
             Change
           </button>
         </fieldset>
@@ -169,9 +186,7 @@ const Settings = () => {
         <fieldset>
           <legend>Change password</legend>
           <div className="mb-3">
-            <label className="form-label">
-              Old password
-            </label>
+            <label className="form-label">Old password</label>
             <input
               type="text"
               className="form-control"
@@ -180,9 +195,7 @@ const Settings = () => {
             />
           </div>
           <div className="mb-3">
-            <label  className="form-label">
-              New password
-            </label>
+            <label className="form-label">New password</label>
             <input
               type="text"
               className="form-control"
@@ -201,9 +214,7 @@ const Settings = () => {
             </div>
           )}
           <div className="mb-3">
-            <label className="form-label">
-              Confirm password
-            </label>
+            <label className="form-label">Confirm password</label>
             <input
               type="text"
               className="form-control"
@@ -218,7 +229,11 @@ const Settings = () => {
               Must match the first password input field
             </div>
           )}
-          <button type="submit" className="btn btn-primary" disabled={!oldPwd || !validNewPwd || !validMatch ? true : false}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={!oldPwd || !validNewPwd || !validMatch ? true : false}
+          >
             Change
           </button>
         </fieldset>

@@ -38,7 +38,7 @@ const Favorites = () => {
     );
   } else if (isSuccess) {
     content = (
-      <div class="alert alert-dark" role="alert">
+      <div className="alert alert-dark" role="alert">
         No news to display
       </div>
     );

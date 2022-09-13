@@ -95,6 +95,17 @@ const Login = () => {
             {error}
           </div>
         )}
+        <div className="alert alert-success" role="alert">
+          <h4 className="alert-heading">Default accounts</h4>
+          <dl className="row">
+            <dt className="col-sm-3">User username</dt>
+            <dd className="col-sm-9">defaultUser</dd>
+            <dt className="col-sm-3">Employee username</dt>
+            <dd className="col-sm-9">defaultEmployee</dd>
+            <dt className="col-sm-3">Password</dt>
+            <dd className="col-sm-9">12345Aa!</dd>
+          </dl>
+        </div>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Username:</Form.Label>

@@ -37,7 +37,7 @@ const EmployeePage = () => {
     content = (
       <>
         <h5 className="card-title ">{`${employee.username}'s page`}</h5>
-        <div class="alert alert-dark" role="alert">
+        <div className="alert alert-dark" role="alert">
           No news to display
         </div>
       </>

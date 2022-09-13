@@ -22,7 +22,7 @@ const EditNewsForm = ({ editEmployeeId }) => {
     password: "",
   });
 
-  const handleUpdate = async(e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       const newPassword =
@@ -61,17 +61,17 @@ const EditNewsForm = ({ editEmployeeId }) => {
         </div>
       )}
       {success.firstname && (
-        <div class="alert alert-success" role="alert">
-          <h4 class="alert-heading">Employee info updated</h4>
-          <dl class="row">
-            <dt class="col-sm-3">Fistname</dt>
-            <dd class="col-sm-9">{success.firstname}</dd>
-            <dt class="col-sm-3">Lastname</dt>
-            <dd class="col-sm-9">{success.lastname}</dd>
-            <dt class="col-sm-3">Username</dt>
-            <dd class="col-sm-9">{success.username}</dd>
-            <dt class="col-sm-3">Password</dt>
-            <dd class="col-sm-9">{success.password}</dd>
+        <div className="alert alert-success" role="alert">
+          <h4 className="alert-heading">Employee info updated</h4>
+          <dl className="row">
+            <dt className="col-sm-3">Fistname</dt>
+            <dd className="col-sm-9">{success.firstname}</dd>
+            <dt className="col-sm-3">Lastname</dt>
+            <dd className="col-sm-9">{success.lastname}</dd>
+            <dt className="col-sm-3">Username</dt>
+            <dd className="col-sm-9">{success.username}</dd>
+            <dt className="col-sm-3">Password</dt>
+            <dd className="col-sm-9">{success.password}</dd>
           </dl>
         </div>
       )}
