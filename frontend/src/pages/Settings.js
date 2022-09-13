@@ -166,7 +166,7 @@ const Settings = () => {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!newUsername ? true : false}
+            disabled={!newUsername || username.includes("default") ? true : false}
           >
             Change
           </button>
@@ -232,7 +232,7 @@ const Settings = () => {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!oldPwd || !validNewPwd || !validMatch ? true : false}
+            disabled={!oldPwd || !validNewPwd || !validMatch || username.includes("default") ? true : false}
           >
             Change
           </button>

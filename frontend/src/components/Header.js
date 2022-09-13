@@ -20,9 +20,9 @@ const Header = () => {
     try{
       await logout().unwrap()
       dispatch(logoutAuth())
-      navigate('/')
+      navigate('/', { state: { from: null }, replace: true });
     } catch (err){
-      navigate('/')
+      navigate('/', { state: { from: null }, replace: true });
     }
   }
   

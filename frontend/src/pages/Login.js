@@ -44,7 +44,7 @@ const Login = () => {
       dispatch(setCredentials({ ...userData, user }));
       setUser("");
       setPwd("");
-      const redirect  = endpoint === 'user' ? '/user/newsfeed' : '/editor/news'
+      const redirect = endpoint === "user" ? "/user/newsfeed" : "/editor/news";
       const from = location.state?.from?.pathname || redirect;
       navigate(from, { replace: true });
     } catch (err) {
@@ -73,7 +73,7 @@ const Login = () => {
   return (
     <>
       <Card.Body>
-        <Nav variant="tabs" defaultActiveKey={"user"}>
+        <Nav variant="tabs" defaultActiveKey={endpoint}>
           <Nav.Item>
             <Nav.Link onClick={() => changeTab("user")} eventKey={"user"}>
               User
