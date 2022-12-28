@@ -47,7 +47,7 @@ const Login = () => {
       const redirect = endpoint === "user" ? "/user/newsfeed" : "/editor/news";
       navigate(redirect, { replace: true });
     } catch (err) {
-      if (!err?.originalStatus) {
+      if (!err?.originalStatus){
         setError("No Server Response");
       } else if (err.originalStatus === 400) {
         setError("Missing Username or Password");
