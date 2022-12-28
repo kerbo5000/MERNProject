@@ -10,6 +10,6 @@ services:
     numInstances: 1
     envVars:
       - key: DATABASE_URI # Imported from Heroku app
-        value: mongodb+srv://kerby12345:kerby12345@cluster0.gmfteat.mongodb.net/companyDB?retryWrites&#x3D;true&amp;w&#x3D;majority
+        value: mongodb+srv://kerby12345:kerby12345@cluster0.gmfteat.mongodb.net/?retryWrites=true&w=majority
       - key: NODE_ENV # Imported from Heroku app
         value: production
